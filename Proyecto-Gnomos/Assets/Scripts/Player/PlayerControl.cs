@@ -22,7 +22,6 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] private float                      _playerSpeed;
     [SerializeField] private float                      _jumpingSpeed;
     [SerializeField] private float                      _fallingSpeed;
-    private bool                                        _AttemptSwitchToJump;
     [Header("Components")]
     [SerializeField] private InputActions               _inputActions;
     [SerializeField] private CharacterController        m_characterController;
@@ -52,6 +51,7 @@ public class PlayerControl : MonoBehaviour
     {
         FindPlayerState();
         m_characterController.Move(MovementControl() * Time.deltaTime);
+        Debug.Log(_playerMovement.y);
     }
   
     
@@ -63,7 +63,8 @@ public class PlayerControl : MonoBehaviour
     {
         if (_currentPlayerState==PlayerState.grounded)
         {
-            //ACABAESTO;
+            _currentPlayerState = PlayerState.jumping;
+            StartCoroutine(EndJump());
         }
     }
 
@@ -76,10 +77,12 @@ public class PlayerControl : MonoBehaviour
         {
             case PlayerState.grounded:
                 TranslatingHorizontalInputToMovement(_flatMoveInputV2);
+                _playerMovement.y = -0.5f;
                 break;
             case PlayerState.jumping:
                 TranslatingHorizontalInputToMovement(_flatMoveInputV2);
                 _playerMovement.y = _jumpingSpeed;
+                _currentPlayerState = PlayerState.falling;
                 break;
             case PlayerState.falling:
                 TranslatingHorizontalInputToMovement(_flatMoveInputV2);
@@ -97,16 +100,22 @@ public class PlayerControl : MonoBehaviour
     }
     private void FindPlayerState()
     {
-        if (m_characterController.isGrounded)
+        if (_currentPlayerState!=PlayerState.jumping)
         {
-            _currentPlayerState=PlayerState.grounded;
-        } else
-        {
-            _currentPlayerState = PlayerState.falling;
+            if (m_characterController.isGrounded)
+            {
+                _currentPlayerState = PlayerState.grounded;
+            } else
+            {
+                _currentPlayerState = PlayerState.falling;
+            }
         }
-        //Attempt to jump failed.
-        _AttemptSwitchToJump = false;
+        
     }
 
-
+    IEnumerator EndJump()
+    {
+        yield return new WaitForSeconds(0.1f);
+        _currentPlayerState= PlayerState.falling;
+    }
 }

@@ -21,11 +21,11 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] private float                      _playerSpeed;
     [SerializeField] private float                      _jumpingSpeed;
     [SerializeField] private float                      _fallingSpeed;
-    [SerializeField] private float                      _playerWeight;
     private Vector3                                     _lastRotation;
     [Header("Components")]
     [SerializeField] private InputActions               _inputActions;
     [SerializeField] private CharacterController        m_characterController;
+
 
 
     // Todo esto son eventos. No estoy seguro que esta ocurriendo aqui.
@@ -36,41 +36,56 @@ public class PlayerControl : MonoBehaviour
         _inputActions = new InputActions();
         _inputActions.GnomeKingLand.Enable();
         _inputActions.GnomeKingLand.Jump.started += Jump;
+        _inputActions.GnomeKingLand.Movement.performed += PlayerIsMoving;
         _inputActions.GnomeKingLand.Movement.performed += CaptureMovementInput;
-        _inputActions.GnomeKingLand.Movement.canceled += CaptureMovementInput;        
+        _inputActions.GnomeKingLand.Movement.canceled += CaptureMovementInput;    
+        _inputActions.GnomeKingLand.Movement.canceled += PlayerIsStopped;
     }
     private void OnDisable()
 
     { 
         _inputActions.GnomeKingLand.Jump.started -= Jump;
+        _inputActions.GnomeKingLand.Movement.started -= PlayerIsMoving;
         _inputActions.GnomeKingLand.Movement.performed -= CaptureMovementInput;
         _inputActions.GnomeKingLand.Movement.canceled -= CaptureMovementInput;
+        _inputActions.GnomeKingLand.Movement.canceled -= PlayerIsStopped;
         _inputActions.GnomeKingLand.Disable();
     }
 
     private void Update()
     {
-        FindPlayerState();
-        Debug.Log($"{_currentPlayerState}, {_lastRotation}");
+        CheckFalling();
         CharacterMovement();
+        CharacterRotation();
     }
 
     private void CharacterMovement()
     {
         Vector3 playerMovement = MovementControl();
         m_characterController.Move(playerMovement * Time.deltaTime);
-        if (_currentPlayerState==PlayerState.moving)
+    }
+
+    private void CharacterRotation()
+    {
+        Vector3 lookAt = m_characterController.velocity;
+        switch (_currentPlayerState)
         {
-            playerMovement.y= 0;
-            playerMovement.Normalize();
-            Debug.Log(playerMovement);
-            _lastRotation = playerMovement;
-            transform.rotation = Quaternion.LookRotation(playerMovement);
-            
-        } else
-        {
-            transform.rotation= Quaternion.LookRotation(_lastRotation);
+            case PlayerState.falling:
+            case PlayerState.jumping:
+                lookAt.y = 0f;
+                if (lookAt.magnitude>0f)
+                {
+                    transform.rotation = Quaternion.LookRotation(lookAt);
+                }
+                break;
+            case PlayerState.moving:
+                transform.rotation=Quaternion.LookRotation(lookAt);
+                break;
+            default:
+                break;
         }
+
+        _lastRotation= lookAt;
     }
 
     private void CaptureMovementInput(InputAction.CallbackContext context)
@@ -85,7 +100,21 @@ public class PlayerControl : MonoBehaviour
             StartCoroutine(EndJump());
         }
     }
+     private void PlayerIsMoving(InputAction.CallbackContext context)
+    {
+        if (m_characterController.isGrounded)
+        {
+            _currentPlayerState = PlayerState.moving;
+        }
+    }
 
+    private void PlayerIsStopped(InputAction.CallbackContext context)
+    {
+        if (m_characterController.isGrounded)
+        {
+            _currentPlayerState = PlayerState.stopped;
+        }
+    }
     private Vector3 MovementControl()
     {
         //Segun _currentPlayerState vamos a ir rotando por lo que el jugador puede hacer o no
@@ -108,6 +137,7 @@ public class PlayerControl : MonoBehaviour
             default:
                 break;
         }
+        Debug.Log(_currentPlayerState);
         return _playerMovement;
     }
     private void TranslatingHorizontalInputToMovement(Vector2 horizontalInput)
@@ -119,23 +149,15 @@ public class PlayerControl : MonoBehaviour
         _playerMovement.x = horizontalInput.x * _playerSpeed;
         _playerMovement.z = horizontalInput.y * _playerSpeed;
     }
-    private void FindPlayerState()
+    private void CheckFalling()
     {
-        if (_currentPlayerState!=PlayerState.jumping)
+        if (m_characterController.isGrounded && !(_currentPlayerState == PlayerState.moving || _currentPlayerState == PlayerState.stopped|| _currentPlayerState==PlayerState.jumping))
         {
-            if (m_characterController.isGrounded)
-            {
-                if (m_characterController.velocity.magnitude > 0.4f)
-                {
-                    _currentPlayerState = PlayerState.moving;
-                } else
-                {
-                    _currentPlayerState = PlayerState.stopped;
-                }
-            } else
-            {
-                _currentPlayerState = PlayerState.falling;
-            }
+            _currentPlayerState = PlayerState.moving;
+        }
+        else if (!m_characterController.isGrounded && _currentPlayerState!=PlayerState.falling)
+        {
+            _currentPlayerState = PlayerState.falling;
         }
     }
 

@@ -52,8 +52,8 @@ MonoBehaviour:
   m_gameManager: {fileID: 0}
   m_player: {fileID: 0}
   m_tickManager: {fileID: 0}
+  _minimumDistanceToFollowPlayer: 3
   m_navAgent: {fileID: 7169939597847964118}
-  m_minimumDistanceToFollowPlayer: 4
 --- !u!136 &8303664340947644375
 CapsuleCollider:
   m_ObjectHideFlags: 0

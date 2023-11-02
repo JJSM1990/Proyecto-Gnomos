@@ -9,9 +9,9 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
     [SerializeField] private GameManager                            m_gameManager;
     [SerializeField] private GameObject                             m_player;
     [SerializeField] private TickManager                            m_tickManager;
-
+    [SerializeField] private float                                  _minimumDistanceToFollowPlayer;
     [SerializeField] private NavMeshAgent                           m_navAgent;
-    [SerializeField] private float                                  m_minimumDistanceToFollowPlayer;
+
     private enum GnomeState
     {
         inactive, followingPlayer, Stopped
@@ -29,16 +29,17 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
     
 
     // Update is called once per frame
+
     public void UpdateTick()
     {
         float distanceToPlayer = Vector3.Distance(m_player.transform.position, this.gameObject.transform.position);
         switch (_currentGnomeState) 
         {
             case GnomeState.followingPlayer:
-                if (distanceToPlayer > m_minimumDistanceToFollowPlayer)
+                if (distanceToPlayer> _minimumDistanceToFollowPlayer && NavMesh.SamplePosition(m_player.transform.position, out NavMeshHit hitFollow, 2f, NavMesh.AllAreas))
                 {
                     NavMeshPath path = new NavMeshPath();
-                    m_navAgent.CalculatePath(m_player.transform.position, path);
+                    m_navAgent.CalculatePath(hitFollow.position, path);
                     m_navAgent.SetPath(path);
                 }
                 else
@@ -47,13 +48,15 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
                     m_navAgent.isStopped = true;
                 }
                 break;
+
             case GnomeState.Stopped:
-                if (distanceToPlayer > m_minimumDistanceToFollowPlayer)
+                if (distanceToPlayer > _minimumDistanceToFollowPlayer)
                 {
                     m_navAgent.isStopped = false;
                     _currentGnomeState = GnomeState.followingPlayer;
                 }
                 break;
+
             default:
                 break;
         }

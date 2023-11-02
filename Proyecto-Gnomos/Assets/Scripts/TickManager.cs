@@ -47,7 +47,6 @@ public class TickManager : MonoBehaviour
             targetGroup = _tickGrouping[0];
         }
         targetGroup.AddMember(me);
-        Debug.Log(_tickGrouping.Count);
         //int i = 0;
         //foreach (TickGroup group in _tickGrouping)
         //{
@@ -98,7 +97,6 @@ public class TickManager : MonoBehaviour
                     member.GetComponent<IUpdateThroughTick>()?.UpdateTick();
                 }
                 i++;
-                Debug.Log("group "+i+" updated, "+ group._members.Count+" members");
                 yield return new WaitForSeconds(_timeBetweenTicks);
             }
         }

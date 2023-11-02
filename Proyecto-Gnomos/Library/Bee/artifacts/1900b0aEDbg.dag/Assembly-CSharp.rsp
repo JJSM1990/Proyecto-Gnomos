@@ -362,15 +362,16 @@
 -analyzer:"C:/Program Files/Unity/Hub/Editor/2022.3.9f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll"
 -analyzer:"C:/Program Files/Unity/Hub/Editor/2022.3.9f1/Editor/Data/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
 "Assets/Scripts/CamaraOffset.cs"
+"Assets/Scripts/Enemy/CarMovement.cs"
 "Assets/Scripts/ExperimentoMaterial.cs"
 "Assets/Scripts/Friendly/Activators/DistanceActivation.cs"
 "Assets/Scripts/Friendly/GnomeBrain.cs"
 "Assets/Scripts/GameManager.cs"
+"Assets/Scripts/IUpdateThroughTick.cs"
 "Assets/Scripts/Player/InputSystem/InputActions.cs"
 "Assets/Scripts/Player/PlayerControl.cs"
 "Assets/Scripts/TickGroup.cs"
 "Assets/Scripts/TickManager.cs"
-"Assets/Scripts/UpdateThroughTick.cs"
 -langversion:9.0
 
 /deterministic

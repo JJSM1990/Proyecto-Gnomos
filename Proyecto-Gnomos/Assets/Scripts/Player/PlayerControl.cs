@@ -10,8 +10,7 @@ public class PlayerControl : MonoBehaviour
     //Si queremos añadir nuevas cosas es mucho mas sencillo hacerlo asi y mantenemos el codigo limpio (por ejemplo slide, sprint, etc)
     private enum PlayerState
     {
-        grounded, falling, jumping
-
+        falling, jumping, moving, stopped, swimming
     }
     private PlayerState _currentPlayerState;
 
@@ -22,6 +21,8 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] private float                      _playerSpeed;
     [SerializeField] private float                      _jumpingSpeed;
     [SerializeField] private float                      _fallingSpeed;
+    [SerializeField] private float                      _playerWeight;
+    private Vector3                                     _lastRotation;
     [Header("Components")]
     [SerializeField] private InputActions               _inputActions;
     [SerializeField] private CharacterController        m_characterController;
@@ -50,24 +51,40 @@ public class PlayerControl : MonoBehaviour
     private void Update()
     {
         FindPlayerState();
-        m_characterController.Move(MovementControl() * Time.deltaTime);
-        Debug.Log(_playerMovement.y);
+        Debug.Log($"{_currentPlayerState}, {_lastRotation}");
+        CharacterMovement();
     }
-  
-    
+
+    private void CharacterMovement()
+    {
+        Vector3 playerMovement = MovementControl();
+        m_characterController.Move(playerMovement * Time.deltaTime);
+        if (_currentPlayerState==PlayerState.moving)
+        {
+            playerMovement.y= 0;
+            playerMovement.Normalize();
+            Debug.Log(playerMovement);
+            _lastRotation = playerMovement;
+            transform.rotation = Quaternion.LookRotation(playerMovement);
+            
+        } else
+        {
+            transform.rotation= Quaternion.LookRotation(_lastRotation);
+        }
+    }
+
     private void CaptureMovementInput(InputAction.CallbackContext context)
     {
         _flatMoveInputV2 = context.ReadValue<Vector2>();
     }
     private void Jump(InputAction.CallbackContext context)
     {
-        if (_currentPlayerState==PlayerState.grounded)
+        if (_currentPlayerState==PlayerState.stopped || _currentPlayerState==PlayerState.moving)
         {
             _currentPlayerState = PlayerState.jumping;
             StartCoroutine(EndJump());
         }
     }
-
 
     private Vector3 MovementControl()
     {
@@ -75,14 +92,14 @@ public class PlayerControl : MonoBehaviour
 
         switch (_currentPlayerState)
         {
-            case PlayerState.grounded:
+            case PlayerState.moving:
+            case PlayerState.stopped:
                 TranslatingHorizontalInputToMovement(_flatMoveInputV2);
                 _playerMovement.y = -0.5f;
                 break;
             case PlayerState.jumping:
                 TranslatingHorizontalInputToMovement(_flatMoveInputV2);
                 _playerMovement.y = _jumpingSpeed;
-                _currentPlayerState = PlayerState.falling;
                 break;
             case PlayerState.falling:
                 TranslatingHorizontalInputToMovement(_flatMoveInputV2);
@@ -95,6 +112,10 @@ public class PlayerControl : MonoBehaviour
     }
     private void TranslatingHorizontalInputToMovement(Vector2 horizontalInput)
     {
+        if (horizontalInput.magnitude<1)
+        {
+            horizontalInput.Normalize();
+        }
         _playerMovement.x = horizontalInput.x * _playerSpeed;
         _playerMovement.z = horizontalInput.y * _playerSpeed;
     }
@@ -104,13 +125,18 @@ public class PlayerControl : MonoBehaviour
         {
             if (m_characterController.isGrounded)
             {
-                _currentPlayerState = PlayerState.grounded;
+                if (m_characterController.velocity.magnitude > 0.4f)
+                {
+                    _currentPlayerState = PlayerState.moving;
+                } else
+                {
+                    _currentPlayerState = PlayerState.stopped;
+                }
             } else
             {
                 _currentPlayerState = PlayerState.falling;
             }
         }
-        
     }
 
     IEnumerator EndJump()
@@ -118,4 +144,5 @@ public class PlayerControl : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
         _currentPlayerState= PlayerState.falling;
     }
+
 }

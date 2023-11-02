@@ -95,7 +95,7 @@ public class TickManager : MonoBehaviour
             {
                 foreach (GameObject member in group._members)
                 {
-                    member.GetComponent<UpdateThroughTick>()?.UpdateTick();
+                    member.GetComponent<IUpdateThroughTick>()?.UpdateTick();
                 }
                 i++;
                 Debug.Log("group "+i+" updated, "+ group._members.Count+" members");

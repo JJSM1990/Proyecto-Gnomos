@@ -44,6 +44,15 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Crouch"",
+                    ""type"": ""Button"",
+                    ""id"": ""f16771fb-817a-494e-9b0f-e3fb696c76d9"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -112,6 +121,17 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f391cdfc-0983-48e7-8d26-9efe453b98de"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Crouch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -128,6 +148,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         m_GnomeKingLand = asset.FindActionMap("GnomeKingLand", throwIfNotFound: true);
         m_GnomeKingLand_Movement = m_GnomeKingLand.FindAction("Movement", throwIfNotFound: true);
         m_GnomeKingLand_Jump = m_GnomeKingLand.FindAction("Jump", throwIfNotFound: true);
+        m_GnomeKingLand_Crouch = m_GnomeKingLand.FindAction("Crouch", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
     }
@@ -193,12 +214,14 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
     private List<IGnomeKingLandActions> m_GnomeKingLandActionsCallbackInterfaces = new List<IGnomeKingLandActions>();
     private readonly InputAction m_GnomeKingLand_Movement;
     private readonly InputAction m_GnomeKingLand_Jump;
+    private readonly InputAction m_GnomeKingLand_Crouch;
     public struct GnomeKingLandActions
     {
         private @InputActions m_Wrapper;
         public GnomeKingLandActions(@InputActions wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movement => m_Wrapper.m_GnomeKingLand_Movement;
         public InputAction @Jump => m_Wrapper.m_GnomeKingLand_Jump;
+        public InputAction @Crouch => m_Wrapper.m_GnomeKingLand_Crouch;
         public InputActionMap Get() { return m_Wrapper.m_GnomeKingLand; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -214,6 +237,9 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
+            @Crouch.started += instance.OnCrouch;
+            @Crouch.performed += instance.OnCrouch;
+            @Crouch.canceled += instance.OnCrouch;
         }
 
         private void UnregisterCallbacks(IGnomeKingLandActions instance)
@@ -224,6 +250,9 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
+            @Crouch.started -= instance.OnCrouch;
+            @Crouch.performed -= instance.OnCrouch;
+            @Crouch.canceled -= instance.OnCrouch;
         }
 
         public void RemoveCallbacks(IGnomeKingLandActions instance)
@@ -283,6 +312,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
     {
         void OnMovement(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+        void OnCrouch(InputAction.CallbackContext context);
     }
     public interface IMenuActions
     {

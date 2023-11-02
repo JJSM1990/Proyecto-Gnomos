@@ -4,7 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class GnomeBrain : MonoBehaviour, UpdateThroughTick
+public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
 {
     [SerializeField] private GameManager                            m_gameManager;
     [SerializeField] private GameObject                             m_player;
@@ -14,7 +14,7 @@ public class GnomeBrain : MonoBehaviour, UpdateThroughTick
     [SerializeField] private float                                  m_minimumDistanceToFollowPlayer;
     private enum GnomeState
     {
-        inactive, followingPlayer,Stopped
+        inactive, followingPlayer, Stopped
     }
     private GnomeState _currentGnomeState=GnomeState.inactive;
     private void Start()
@@ -59,9 +59,12 @@ public class GnomeBrain : MonoBehaviour, UpdateThroughTick
         }
     }
 
+    private void SwitchNavMeshAgent(bool onOff)
+    {
+        m_navAgent.enabled = onOff;
+    }
     public void Activate()
     {
-
         if (_currentGnomeState==GnomeState.inactive)
         {
             _currentGnomeState = GnomeState.followingPlayer;

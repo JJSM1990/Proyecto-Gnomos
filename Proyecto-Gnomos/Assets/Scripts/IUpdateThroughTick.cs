@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface UpdateThroughTick 
+public interface IUpdateThroughTick 
 {
     public void UpdateTick();
 }

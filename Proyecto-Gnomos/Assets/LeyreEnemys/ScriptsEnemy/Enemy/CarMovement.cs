@@ -1,7 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UIElements;
 
 public class CarMovement : MonoBehaviour
 {
@@ -9,10 +12,12 @@ public class CarMovement : MonoBehaviour
     [SerializeField] Transform[] m_patrolPoints;
     [SerializeField] int _currentPatrolPoint;
 
-    [SerializeField] float degrees;
+    [SerializeField] float viewAngle;
+    [SerializeField] float minPlayerDetectionDistance;
 
     [SerializeField] GameObject m_player;
     [SerializeField] EnemyState m_currentState;
+    //[SerializeField] bool m_isChasing;
 
     private enum EnemyState
     {
@@ -30,30 +35,50 @@ public class CarMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(m_currentState == EnemyState.Patrolling)
+        if(m_currentState == EnemyState.Chasing && m_currentState != EnemyState.Patrolling)
         {
-            if (!m_NavMeshAgent.hasPath)
-            {
-                m_NavMeshAgent.SetDestination(m_patrolPoints[_currentPatrolPoint].position);
-                _currentPatrolPoint++;
-
-                if (_currentPatrolPoint > m_patrolPoints.Length - 1)
-                {
-                    _currentPatrolPoint = 0;
-                }
-            }
+            ChasePlayer();
+        }
+        else
+        {
+            Patrolling();
         }
 
-        if(m_currentState == EnemyState.Chasing)
+        //NO FUNCIONA 
+        //RaycastHit hit;
+        //Vector3 rayDirection = m_player.transform.position - transform.position;
+        //var distanceToPlayer = Vector3.Distance(transform.position, m_player.transform.position);
+
+        //if((Vector3.Angle(rayDirection, transform.forward)) < viewAngle)
+        //{
+        //    if (Physics.Raycast(transform.position, rayDirection, out hit))
+        //    {
+        //        if (hit.transform.tag == "Player")
+        //        {
+        //            ChasePlayer();
+        //        }
+        //    }
+        //}
+
+    }
+
+    private void Patrolling()
+    {
+        if (!m_NavMeshAgent.hasPath)
         {
-            Vector3 direction = m_player.transform.position - transform.position;
-            if(Mathf.Abs(Vector3.Angle(transform.forward, direction)) < degrees)
+            m_NavMeshAgent.SetDestination(m_patrolPoints[_currentPatrolPoint].position);
+            _currentPatrolPoint++;
+
+            if (_currentPatrolPoint > m_patrolPoints.Length - 1)
             {
-                m_NavMeshAgent.SetDestination(m_player.transform.position);
+                _currentPatrolPoint = 0;
             }
-
         }
+    }
 
+    private void ChasePlayer()
+    {
+        m_NavMeshAgent.SetDestination(m_player.transform.position);
     }
 
 

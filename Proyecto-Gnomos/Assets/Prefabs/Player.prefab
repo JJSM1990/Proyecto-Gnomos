@@ -163,7 +163,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 3
   m_Height: 0.9
-  m_Radius: 0.25
+  m_Radius: 0.34
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
@@ -200,6 +200,7 @@ MonoBehaviour:
   _playerSpeed: 10
   _jumpingSpeed: 10
   _fallingSpeed: 10
+  _playerWeight: 5
   m_characterController: {fileID: 7384557912436395274}
 --- !u!1 &3852416544209203606
 GameObject:

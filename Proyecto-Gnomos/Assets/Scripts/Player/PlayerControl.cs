@@ -21,6 +21,8 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] private float                      _playerSpeed;
     [SerializeField] private float                      _jumpingSpeed;
     [SerializeField] private float                      _fallingSpeed;
+    [SerializeField] private float                      _playerWeight;
+    
     private Vector3                                     _lastRotation;
     [Header("Components")]
     [SerializeField] private InputActions               _inputActions;
@@ -52,6 +54,10 @@ public class PlayerControl : MonoBehaviour
         _inputActions.GnomeKingLand.Disable();
     }
 
+    private void Start()
+    {
+        _lastRotation = transform.rotation.eulerAngles;
+    }
     private void Update()
     {
         CheckFalling();
@@ -67,7 +73,7 @@ public class PlayerControl : MonoBehaviour
 
     private void CharacterRotation()
     {
-        Vector3 lookAt = m_characterController.velocity;
+        Vector3 lookAt = _playerMovement.magnitude > 0.5f ? _playerMovement: _lastRotation ;
         switch (_currentPlayerState)
         {
             case PlayerState.falling:
@@ -161,6 +167,17 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        var pushInterface = hit.collider.GetComponent<IPushableByPlayer>();
+
+        if (pushInterface!=null&&hit.moveDirection.y>-0.6f)
+        {
+            Vector3 pushStrength = _playerWeight * _playerMovement;
+            pushInterface.Push(pushStrength);
+        }
+
+    }
     IEnumerator EndJump()
     {
         yield return new WaitForSeconds(0.1f);

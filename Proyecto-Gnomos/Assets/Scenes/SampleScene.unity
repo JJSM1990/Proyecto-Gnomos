@@ -1069,7 +1069,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 662090781}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f7633c93f0364a418841eeb8b058634, type: 3}
+  m_Script: {fileID: 11500000, guid: f4044717213e31446939f7bd49c896ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_TrackedObjectOffset: {x: 0, y: 0, z: 0}
@@ -1087,18 +1087,6 @@ MonoBehaviour:
   m_BiasX: 0
   m_BiasY: 0
   m_CenterOnActivate: 1
-  m_GroupFramingSize: 0.8
-  m_FramingMode: 2
-  m_FrameDamping: 2
-  m_AdjustmentMode: 0
-  m_MaxDollyIn: 5000
-  m_MaxDollyOut: 5000
-  m_MinimumDistance: 1
-  m_MaximumDistance: 5000
-  m_MinimumFOV: 3
-  m_MaximumFOV: 60
-  m_MinimumOrthoSize: 1
-  m_MaximumOrthoSize: 5000
 --- !u!1 &690759064
 GameObject:
   m_ObjectHideFlags: 0
@@ -1743,8 +1731,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4776ada1780fa6f40be1bce23417663c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _offset: {x: 0, y: 10, z: -10}
-  _smoothTime: 0.5
+  _offset: {x: 0, y: 20, z: -20}
+  _smoothTime: 0.05
   target: {fileID: 1758016267}
 --- !u!114 &963194230
 MonoBehaviour:
@@ -1799,7 +1787,7 @@ MonoBehaviour:
   m_Priority: 10
   m_StandbyUpdate: 2
   m_LookAt: {fileID: 1758016267}
-  m_Follow: {fileID: 0}
+  m_Follow: {fileID: 1758016267}
   m_Lens:
     FieldOfView: 40
     OrthographicSize: 4
@@ -1812,7 +1800,7 @@ MonoBehaviour:
     FocusDistance: 10
     m_SensorSize: {x: 1, y: 1}
   m_Transitions:
-    m_BlendHint: 0
+    m_BlendHint: 3
     m_InheritPosition: 0
     m_OnCameraLive:
       m_PersistentCalls:
@@ -3435,7 +3423,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cube
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2858930200763468283, guid: 8d94f63646fd2a84e8cc6c90b69b37cb, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5813829172785287937}
-  - component: {fileID: 2858930200763468283}
   - component: {fileID: 7555552077289689876}
   - component: {fileID: 1194332230555674221}
+  - component: {fileID: 9092962306417489779}
   - component: {fileID: 5170494818594372603}
   - component: {fileID: 3546299886530139723}
   - component: {fileID: 4513693419761849134}
@@ -38,22 +38,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2858930200763468283
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8878581015525675465}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d7dd9c723d5db3449188f5aab8feea9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameManager: {fileID: 0}
-  material: {fileID: 2100000, guid: 653890d58a7c35d4891137cb3c66561a, type: 2}
-  materialTransparent: {fileID: 2100000, guid: c2883c2103ce6d94083f6c9a35dd0e67, type: 2}
-  player: {fileID: 0}
 --- !u!33 &7555552077289689876
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -104,6 +88,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &9092962306417489779
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8878581015525675465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b778ee16e5ad12942b5a20493adecbab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_meshRenderer: {fileID: 1194332230555674221}
+  m_normalMaterial: {fileID: 2100000, guid: 653890d58a7c35d4891137cb3c66561a, type: 2}
+  m_transparentMaterial: {fileID: 2100000, guid: c2883c2103ce6d94083f6c9a35dd0e67, type: 2}
 --- !u!65 &5170494818594372603
 BoxCollider:
   m_ObjectHideFlags: 0

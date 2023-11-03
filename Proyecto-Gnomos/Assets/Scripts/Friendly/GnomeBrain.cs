@@ -70,6 +70,7 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
     {
         if (_currentGnomeState==GnomeState.inactive)
         {
+            m_player.GetComponent<PlayerControl>().AddGnomeToFollowerList(this.gameObject);
             _currentGnomeState = GnomeState.followingPlayer;
             m_tickManager.AddObjectToAGroup(this.gameObject);
         }

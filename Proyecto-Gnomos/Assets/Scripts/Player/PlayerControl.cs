@@ -27,6 +27,7 @@ public class PlayerControl : MonoBehaviour
     [Header("Components")]
     [SerializeField] private InputActions               _inputActions;
     [SerializeField] private CharacterController        m_characterController;
+    [SerializeField] private List<GameObject>           _activatedGnomes;
 
 
 
@@ -169,13 +170,22 @@ public class PlayerControl : MonoBehaviour
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         var pushInterface = hit.collider.GetComponent<IPushableByPlayer>();
-
-        if (pushInterface!=null&&hit.moveDirection.y>-0.6f)
+        if (pushInterface!=null && hit.moveDirection.y>-0.6f)
         {
             Vector3 pushStrength = _playerWeight * _playerMovement;
             pushInterface.Push(pushStrength);
         }
 
+    }
+
+    public void AddGnomeToFollowerList(GameObject gnome)
+    {
+        _activatedGnomes.Add(gnome);
+    }
+
+    public void RemoveGnomeFromFollowerList(GameObject Gnome)
+    {
+        _activatedGnomes.Remove(Gnome);
     }
     IEnumerator EndJump()
     {

@@ -336,15 +336,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88c9dce79a9ff86418a86791508bc3ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_enemy: {fileID: 126814062}
-  m_enemyCurrentState: 0
-  m_enemySpeed: 5
-  m_player: {fileID: 1304311196}
-  patrolPoints:
+  m_NavMeshAgent: {fileID: 126814062}
+  m_patrolPoints:
   - {fileID: 1738319883}
   - {fileID: 2014183784}
   - {fileID: 1972421951}
   _currentPatrolPoint: 0
+  viewAngle: 0
+  minPlayerDetectionDistance: 0
+  m_player: {fileID: 1304311196}
+  m_currentState: 0
 --- !u!1 &147666307
 GameObject:
   m_ObjectHideFlags: 0
@@ -1796,7 +1797,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.2317321, y: -0.66375864, z: 0.22839034, w: 0.6734706}
+  m_LocalRotation: {x: -0.23173212, y: -0.6637585, z: 0.2283903, w: 0.6734707}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

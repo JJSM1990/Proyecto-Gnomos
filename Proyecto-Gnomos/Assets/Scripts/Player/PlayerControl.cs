@@ -143,7 +143,6 @@ public class PlayerControl : MonoBehaviour
             default:
                 break;
         }
-        Debug.Log(_currentPlayerState);
         return _playerMovement;
     }
     private void TranslatingHorizontalInputToMovement(Vector2 horizontalInput)

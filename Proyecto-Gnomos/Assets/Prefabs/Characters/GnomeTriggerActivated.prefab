@@ -127,6 +127,10 @@ PrefabInstance:
       propertyPath: _minimumDistanceToFollowPlayer
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 7169939597847964118, guid: c5261903d183f6c42859b283e772c59e, type: 3}
+      propertyPath: m_AngularSpeed
+      value: 360
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:

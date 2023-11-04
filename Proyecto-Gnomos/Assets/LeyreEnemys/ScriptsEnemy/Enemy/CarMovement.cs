@@ -40,14 +40,15 @@ public class CarMovement : MonoBehaviour
     {
         PlayerOnSight();
 
-        if(m_currentState == EnemyState.Chasing && m_currentState != EnemyState.Patrolling)
+        if(m_currentState == EnemyState.Chasing)
         {
             ChasePlayer();
         }
-        if(m_currentState == EnemyState.Patrolling && m_currentState != EnemyState.Chasing)
+        if(m_currentState == EnemyState.Patrolling )
         {
             Patrolling();
         }
+        Debug.Log(m_currentState.ToString());
 
     }
 
@@ -68,21 +69,23 @@ public class CarMovement : MonoBehaviour
     private void PlayerOnSight()
     {
         RaycastHit hit;
-        Vector3 rayDir = m_player.transform.position - transform.position;
+        Vector3 rayDir = (m_player.transform.position + m_player.GetComponent<CharacterController>().center) - transform.position;
         float distanceToPlayer = Vector3.Distance(transform.position, m_player.transform.position);
 
-        if (Vector3.Angle(rayDir, transform.forward) < viewAngle)
+        if (Vector3.Angle(transform.forward, rayDir ) < viewAngle && distanceToPlayer < minPlayerDetectionDistance)
         {
-            if (Physics.Raycast(transform.position, rayDir, out hit) && distanceToPlayer < minPlayerDetectionDistance)
+            if (Physics.Raycast(transform.position, rayDir, out hit))
             {
-                if (hit.transform.tag == "Player")
+                if (hit.collider.tag == "Player")
                 {
+                    Debug.Log("Switching to Chasing");
                     m_currentState = EnemyState.Chasing;
                 }
             }
         }
-        else if(distanceToPlayer > minPlayerDetectionDistance)
+        else
         {
+            Debug.Log("Switching to Patrol");
             m_currentState = EnemyState.Patrolling;
         }
 
@@ -93,7 +96,23 @@ public class CarMovement : MonoBehaviour
         m_NavMeshAgent.SetDestination(m_player.transform.position);
     }
 
+    private void OnDrawGizmos()
+    {
+        //Vector3 rayDir = (m_player.transform.position + m_player.GetComponent<CharacterController>().center) - transform.position;
+        //float distanceToPlayer = Vector3.Distance(transform.position, m_player.transform.position);
+        //if (Vector3.Angle(transform.forward, rayDir) < viewAngle && distanceToPlayer < minPlayerDetectionDistance)
+        //{
+        //    Gizmos.color = Color.green;
+        //} else
+        //{
+        //    Gizmos.color= Color.red;
+        //}
 
+        //Gizmos.DrawRay(new Ray(transform.position, m_player.transform.position - transform.position));
+        //Gizmos.DrawSphere(transform.position, minPlayerDetectionDistance);
+
+        
+    }
 
 
 }

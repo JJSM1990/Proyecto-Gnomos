@@ -262,7 +262,7 @@ MonoBehaviour:
   - {fileID: 440093376}
   _currentPatrolPoint: 0
   viewAngle: 90
-  minPlayerDetectionDistance: 0
+  minPlayerDetectionDistance: 20
   m_player: {fileID: 106977334}
   m_currentState: 0
 --- !u!195 &413567199 stripped

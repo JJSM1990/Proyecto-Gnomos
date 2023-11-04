@@ -19,10 +19,13 @@ public class CarMovement : MonoBehaviour
     [SerializeField] EnemyState m_currentState;
     //[SerializeField] bool m_isChasing;
 
+
+
     private enum EnemyState
     {
         Patrolling,
         Chasing,
+        Attack,
     }
 
     // Start is called before the first frame update
@@ -35,30 +38,16 @@ public class CarMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        PlayerOnSight();
+
         if(m_currentState == EnemyState.Chasing && m_currentState != EnemyState.Patrolling)
         {
             ChasePlayer();
         }
-        else
+        if(m_currentState == EnemyState.Patrolling && m_currentState != EnemyState.Chasing)
         {
             Patrolling();
         }
-
-        //NO FUNCIONA 
-        //RaycastHit hit;
-        //Vector3 rayDirection = m_player.transform.position - transform.position;
-        //var distanceToPlayer = Vector3.Distance(transform.position, m_player.transform.position);
-
-        //if((Vector3.Angle(rayDirection, transform.forward)) < viewAngle)
-        //{
-        //    if (Physics.Raycast(transform.position, rayDirection, out hit))
-        //    {
-        //        if (hit.transform.tag == "Player")
-        //        {
-        //            ChasePlayer();
-        //        }
-        //    }
-        //}
 
     }
 
@@ -76,10 +65,35 @@ public class CarMovement : MonoBehaviour
         }
     }
 
+    private void PlayerOnSight()
+    {
+        RaycastHit hit;
+        Vector3 rayDir = m_player.transform.position - transform.position;
+        float distanceToPlayer = Vector3.Distance(transform.position, m_player.transform.position);
+
+        if (Vector3.Angle(rayDir, transform.forward) < viewAngle)
+        {
+            if (Physics.Raycast(transform.position, rayDir, out hit) && distanceToPlayer < minPlayerDetectionDistance)
+            {
+                if (hit.transform.tag == "Player")
+                {
+                    m_currentState = EnemyState.Chasing;
+                }
+            }
+        }
+        else if(distanceToPlayer > minPlayerDetectionDistance)
+        {
+            m_currentState = EnemyState.Patrolling;
+        }
+
+    }
+
     private void ChasePlayer()
     {
         m_NavMeshAgent.SetDestination(m_player.transform.position);
     }
+
+
 
 
 }

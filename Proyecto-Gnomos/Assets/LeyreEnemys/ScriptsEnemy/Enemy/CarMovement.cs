@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
@@ -14,10 +15,14 @@ public class CarMovement : MonoBehaviour
 
     [SerializeField] float viewAngle;
     [SerializeField] float minPlayerDetectionDistance;
+    [SerializeField] bool m_playerIsSeen;
 
     [SerializeField] GameObject m_player;
     [SerializeField] EnemyState m_currentState;
     //[SerializeField] bool m_isChasing;
+
+    private Coroutine m_preparingCoroutine;
+    [SerializeField] float m_preparingTime;
 
 
 
@@ -25,7 +30,7 @@ public class CarMovement : MonoBehaviour
     {
         Patrolling,
         Chasing,
-        Attack,
+        Preparing,
     }
 
     // Start is called before the first frame update
@@ -33,12 +38,15 @@ public class CarMovement : MonoBehaviour
     {
         _currentPatrolPoint = 0;
         m_currentState = EnemyState.Patrolling;
+        m_NavMeshAgent.speed = 3.5f;
+        m_NavMeshAgent.angularSpeed = 160f;
     }
 
     // Update is called once per frame
     void Update()
     {
         PlayerOnSight();
+        ChangeState();
 
         if(m_currentState == EnemyState.Chasing)
         {
@@ -48,14 +56,20 @@ public class CarMovement : MonoBehaviour
         {
             Patrolling();
         }
-        Debug.Log(m_currentState.ToString());
+        if(m_currentState == EnemyState.Preparing)
+        {
+            PreparingToChase();
+        }
 
     }
 
     private void Patrolling()
     {
+        m_NavMeshAgent.speed = 3.5f;
+        m_NavMeshAgent.angularSpeed = 160;
         if (!m_NavMeshAgent.hasPath)
         {
+           
             m_NavMeshAgent.SetDestination(m_patrolPoints[_currentPatrolPoint].position);
             _currentPatrolPoint++;
 
@@ -78,22 +92,62 @@ public class CarMovement : MonoBehaviour
             {
                 if (hit.collider.tag == "Player")
                 {
-                    Debug.Log("Switching to Chasing");
-                    m_currentState = EnemyState.Chasing;
+                    m_playerIsSeen = true;
+                    return;
+                    //m_currentState = EnemyState.Preparing;
                 }
             }
         }
-        else
-        {
-            Debug.Log("Switching to Patrol");
-            m_currentState = EnemyState.Patrolling;
-        }
-
+            m_playerIsSeen = false;
     }
 
     private void ChasePlayer()
     {
+        m_NavMeshAgent.speed = 20f;
+        m_NavMeshAgent.angularSpeed = 360f;
+        m_NavMeshAgent.acceleration = 20f;
         m_NavMeshAgent.SetDestination(m_player.transform.position);
+    }
+
+    private void PreparingToChase() 
+    {
+        if(m_preparingCoroutine == null)
+        {
+            m_preparingCoroutine = StartCoroutine(PreparingCorutine());
+        }
+  
+    }
+
+    private void ChangeState()
+    {
+        switch (m_currentState)
+        {
+            case EnemyState.Patrolling:
+                if(m_playerIsSeen == true)
+                {
+                    m_currentState = EnemyState.Preparing;
+                }
+                break;
+            case EnemyState.Chasing:
+                if(m_playerIsSeen == false)
+                {
+                    m_currentState=EnemyState.Patrolling;
+                }
+                break;
+            default:
+                break;
+
+        }
+    }
+
+    private IEnumerator PreparingCorutine()
+    {
+        m_currentState = EnemyState.Preparing;
+        m_NavMeshAgent.speed = 0;
+        yield return new WaitForSeconds(m_preparingTime);
+        Debug.Log("Switching to chase");
+        m_currentState = EnemyState.Chasing;
+        m_preparingCoroutine = null;   
     }
 
     private void OnDrawGizmos()
@@ -109,9 +163,7 @@ public class CarMovement : MonoBehaviour
         //}
 
         //Gizmos.DrawRay(new Ray(transform.position, m_player.transform.position - transform.position));
-        //Gizmos.DrawSphere(transform.position, minPlayerDetectionDistance);
-
-        
+        //Gizmos.DrawSphere(transform.position, minPlayerDetectionDistance);      
     }
 
 

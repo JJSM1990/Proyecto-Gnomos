@@ -258,8 +258,10 @@ MonoBehaviour:
   _currentPatrolPoint: 0
   viewAngle: 90
   minPlayerDetectionDistance: 10
+  m_playerIsSeen: 0
   m_player: {fileID: 106977334}
   m_currentState: 0
+  m_preparingTime: 1
 --- !u!195 &413567199 stripped
 NavMeshAgent:
   m_CorrespondingSourceObject: {fileID: 1368388568347677341, guid: 4e13365a0141e884ca506cc4476ef3b0, type: 3}
@@ -493,6 +495,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1368388568347677341, guid: 4e13365a0141e884ca506cc4476ef3b0, type: 3}
+      propertyPath: m_AutoBraking
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1368388568347677341, guid: 4e13365a0141e884ca506cc4476ef3b0, type: 3}
+      propertyPath: m_AngularSpeed
+      value: 160
+      objectReference: {fileID: 0}
+    - target: {fileID: 1368388568347677341, guid: 4e13365a0141e884ca506cc4476ef3b0, type: 3}
+      propertyPath: m_StoppingDistance
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3886321067443511106, guid: 4e13365a0141e884ca506cc4476ef3b0, type: 3}
       propertyPath: m_Name
       value: Car

@@ -344,8 +344,10 @@ MonoBehaviour:
   _currentPatrolPoint: 0
   viewAngle: 0
   minPlayerDetectionDistance: 0
-  m_player: {fileID: 1304311196}
+  m_playerIsSeen: 0
+  m_player: {fileID: 1758016268}
   m_currentState: 0
+  m_preparingTime: 0
 --- !u!1 &147666307
 GameObject:
   m_ObjectHideFlags: 0

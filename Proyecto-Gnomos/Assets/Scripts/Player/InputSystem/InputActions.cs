@@ -53,15 +53,6 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""StackGnomes"",
-                    ""type"": ""Button"",
-                    ""id"": ""26087c6c-7f76-47de-a770-37a9e5ff9eba"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -141,17 +132,6 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""action"": ""Crouch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""dd73be80-0111-4e4e-b71b-9dba96007847"",
-                    ""path"": ""f"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""StackGnomes"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -169,7 +149,6 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         m_GnomeKingLand_Movement = m_GnomeKingLand.FindAction("Movement", throwIfNotFound: true);
         m_GnomeKingLand_Jump = m_GnomeKingLand.FindAction("Jump", throwIfNotFound: true);
         m_GnomeKingLand_Crouch = m_GnomeKingLand.FindAction("Crouch", throwIfNotFound: true);
-        m_GnomeKingLand_StackGnomes = m_GnomeKingLand.FindAction("StackGnomes", throwIfNotFound: true);
         // Menu
         m_Menu = asset.FindActionMap("Menu", throwIfNotFound: true);
     }
@@ -236,7 +215,6 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_GnomeKingLand_Movement;
     private readonly InputAction m_GnomeKingLand_Jump;
     private readonly InputAction m_GnomeKingLand_Crouch;
-    private readonly InputAction m_GnomeKingLand_StackGnomes;
     public struct GnomeKingLandActions
     {
         private @InputActions m_Wrapper;
@@ -244,7 +222,6 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         public InputAction @Movement => m_Wrapper.m_GnomeKingLand_Movement;
         public InputAction @Jump => m_Wrapper.m_GnomeKingLand_Jump;
         public InputAction @Crouch => m_Wrapper.m_GnomeKingLand_Crouch;
-        public InputAction @StackGnomes => m_Wrapper.m_GnomeKingLand_StackGnomes;
         public InputActionMap Get() { return m_Wrapper.m_GnomeKingLand; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -263,9 +240,6 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @Crouch.started += instance.OnCrouch;
             @Crouch.performed += instance.OnCrouch;
             @Crouch.canceled += instance.OnCrouch;
-            @StackGnomes.started += instance.OnStackGnomes;
-            @StackGnomes.performed += instance.OnStackGnomes;
-            @StackGnomes.canceled += instance.OnStackGnomes;
         }
 
         private void UnregisterCallbacks(IGnomeKingLandActions instance)
@@ -279,9 +253,6 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
             @Crouch.started -= instance.OnCrouch;
             @Crouch.performed -= instance.OnCrouch;
             @Crouch.canceled -= instance.OnCrouch;
-            @StackGnomes.started -= instance.OnStackGnomes;
-            @StackGnomes.performed -= instance.OnStackGnomes;
-            @StackGnomes.canceled -= instance.OnStackGnomes;
         }
 
         public void RemoveCallbacks(IGnomeKingLandActions instance)
@@ -342,7 +313,6 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
         void OnMovement(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
         void OnCrouch(InputAction.CallbackContext context);
-        void OnStackGnomes(InputAction.CallbackContext context);
     }
     public interface IMenuActions
     {

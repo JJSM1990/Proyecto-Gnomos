@@ -10,20 +10,31 @@ public class PlayerControl : MonoBehaviour
     //Si queremos añadir nuevas cosas es mucho mas sencillo hacerlo asi y mantenemos el codigo limpio (por ejemplo slide, sprint, etc)
     private enum PlayerState
     {
-        falling, jumping, moving, stopped, swimming
+        falling, jumping, moving, stopped, stacking
     }
     private PlayerState _currentPlayerState;
 
 
     public Vector2                                      _flatMoveInputV2 { get; private set; }
     private Vector3                                     _playerMovement;
+
+
     [Header("Player Movement Variables")]
     [SerializeField] private float                      _playerSpeed;
     [SerializeField] private float                      _jumpingSpeed;
     [SerializeField] private float                      _fallingSpeed;
     [SerializeField] private float                      _playerWeight;
-    
+
     private Vector3                                     _lastRotation;
+
+    [Header("Stack Variables")]
+    [SerializeField] private bool                       _stackBool;
+    [SerializeField] private float                      _stackCountTarget;
+    [SerializeField] private int                        _stackAmount;
+    [SerializeField] private float                      _stackMultiplier;
+    [SerializeField] private List<GameObject>           _stackList;
+    [SerializeField] private GameObject                 m_stackListParent;
+
     [Header("Components")]
     [SerializeField] private InputActions               _inputActions;
     [SerializeField] private CharacterController        m_characterController;
@@ -43,6 +54,8 @@ public class PlayerControl : MonoBehaviour
         _inputActions.GnomeKingLand.Movement.performed += CaptureMovementInput;
         _inputActions.GnomeKingLand.Movement.canceled += CaptureMovementInput;    
         _inputActions.GnomeKingLand.Movement.canceled += PlayerIsStopped;
+        _inputActions.GnomeKingLand.StackGnomes.performed += StartStack;
+        _inputActions.GnomeKingLand.StackGnomes.canceled += EndStack;
     }
     private void OnDisable()
 
@@ -52,6 +65,8 @@ public class PlayerControl : MonoBehaviour
         _inputActions.GnomeKingLand.Movement.performed -= CaptureMovementInput;
         _inputActions.GnomeKingLand.Movement.canceled -= CaptureMovementInput;
         _inputActions.GnomeKingLand.Movement.canceled -= PlayerIsStopped;
+        _inputActions.GnomeKingLand.StackGnomes.performed -= StartStack;
+        _inputActions.GnomeKingLand.StackGnomes.canceled -= EndStack;
         _inputActions.GnomeKingLand.Disable();
     }
 
@@ -61,11 +76,16 @@ public class PlayerControl : MonoBehaviour
     }
     private void Update()
     {
+        if (_stackBool)
+        {
+            _stackCountTarget += (Time.deltaTime * _stackMultiplier);
+        }
         CheckFalling();
         CharacterMovement();
         CharacterRotation();
     }
 
+    #region Movement
     private void CharacterMovement()
     {
         Vector3 playerMovement = MovementControl();
@@ -167,17 +187,17 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
-    private void OnControllerColliderHit(ControllerColliderHit hit)
+    IEnumerator EndJump()
     {
-        var pushInterface = hit.collider.GetComponent<IPushableByPlayer>();
-        if (pushInterface!=null && hit.moveDirection.y>-0.6f)
-        {
-            Vector3 pushStrength = _playerWeight * _playerMovement;
-            pushInterface.Push(pushStrength);
-        }
-
+        yield return new WaitForSeconds(0.1f);
+        _currentPlayerState = PlayerState.falling;
     }
 
+
+    #endregion
+
+
+    #region GnomeManagement
     public void AddGnomeToFollowerList(GameObject gnome)
     {
         _activatedGnomes.Add(gnome);
@@ -187,10 +207,73 @@ public class PlayerControl : MonoBehaviour
     {
         _activatedGnomes.Remove(Gnome);
     }
-    IEnumerator EndJump()
+    #endregion
+
+    #region Stacking
+
+    private void StartStack(InputAction.CallbackContext context)
     {
-        yield return new WaitForSeconds(0.1f);
-        _currentPlayerState= PlayerState.falling;
+        _stackCountTarget = 0;
+        _currentPlayerState = PlayerState.stacking;
+        _stackBool = true;
     }
 
+    private void EndStack(InputAction.CallbackContext context)
+    {
+        _stackBool = false;
+        _stackAmount = Mathf.FloorToInt(_stackCountTarget);
+        ExecuteStack();
+
+    }
+
+    private void ExecuteStack()
+    {
+        Debug.Log(CheckGnomesVSStack());
+        if (CheckGnomesVSStack())
+        {
+            addGnomesToStackList(_stackAmount);
+            SpawnEmpties(_stackList.Count);
+        }
+    }
+
+    private bool CheckGnomesVSStack()
+    {
+        if (_stackAmount == 0 || _activatedGnomes.Count==0) return false;
+        if (_stackAmount < _activatedGnomes.Count) return true;
+        _stackAmount = _activatedGnomes.Count;
+        return true;
+    }
+
+    private void  addGnomesToStackList(int stack)
+    {
+        while (stack > 0)
+        {
+            _stackList.Add(_activatedGnomes[0]);
+            _activatedGnomes.Remove(_activatedGnomes[0]);
+            stack--;
+        }
+    }
+
+    private void SpawnEmpties(int AmountGnomes)
+    {
+        Vector3 lastPoint= transform.position;
+        for (int i = 0; i < AmountGnomes; i++)
+        {
+            GameObject newStackEmpty= Instantiate(new GameObject(), m_stackListParent.transform);
+            newStackEmpty.transform.position = lastPoint;
+            lastPoint.y += _stackList[i].GetComponent<CapsuleCollider>().height;
+        }
+    }
+        
+    #endregion
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        var pushInterface = hit.collider.GetComponent<IPushableByPlayer>();
+        if (pushInterface != null && hit.moveDirection.y > -0.6f)
+        {
+            Vector3 pushStrength = _playerWeight * _playerMovement;
+            pushInterface.Push(pushStrength);
+        }
+
+    }
 }

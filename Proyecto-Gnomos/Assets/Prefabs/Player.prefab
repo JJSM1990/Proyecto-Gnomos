@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7384557912436395274}
   - component: {fileID: 8056514125864739194}
   - component: {fileID: 7617000652885805533}
+  - component: {fileID: 1662637976637881043}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -95,16 +96,39 @@ MonoBehaviour:
   _jumpingSpeed: 5
   _fallingSpeed: 10
   _playerWeight: 10
+  _callToStackRange: 3
   _playerSpeedStacked: 0
   _stackBool: 0
   _stackCountTarget: 0
   _stackAmount: 0
   _stackMultiplier: 1
   _timeToExecute: 0
-  _stackList: []
   _playerHeightDifference: 0
   m_characterController: {fileID: 7384557912436395274}
-  _activatedGnomes: []
+  m_activatedGnomesList: {fileID: 0}
+  m_inactiveGnomeList: {fileID: 0}
+  m_stackGnomeList: {fileID: 0}
+--- !u!95 &1662637976637881043
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3684580924763624364}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 2feb31acfdb89314981ec699992079aa, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &7853049405177201276
 GameObject:
   m_ObjectHideFlags: 0

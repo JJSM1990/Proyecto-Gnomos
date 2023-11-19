@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -28,24 +30,29 @@ public class PlayerControl : MonoBehaviour
     private Vector3                                     _lastRotation;
 
     [Header("Stack Variables")]
+    [SerializeField] private float                      _callToStackRange;
+    private int                                         _gnomesInRange;
     [SerializeField] private float                      _playerSpeedStacked;
     [SerializeField] private bool                       _stackBool;
     [SerializeField] private float                      _stackCountTarget;
     [SerializeField] private int                        _stackAmount;
     [SerializeField] private float                      _stackMultiplier;
     [SerializeField] private float                      _timeToExecute;
-     public List<GameObject>                            _stackList;
+
     [SerializeField] private float                      _playerHeightDifference;
-    private GameObject                                  m_stackListParent;
+    private GameObject                                  m_stackParent;
 
 
     [Header("Components")]
     [SerializeField] private CharacterController        m_characterController;
-    public List<GameObject>                             _activatedGnomes;
     private InputActions                                m_inputActions;
     private GameObject                                  m_gnomeModel;
+    private Animator                                    m_anim;
 
-
+    [Header("GnomeLists")]
+    [SerializeField] private Transform                  m_activatedGnomesList;
+    [SerializeField] private Transform                  m_inactiveGnomeList;
+    [SerializeField] private Transform                  m_stackGnomeList;
     // Todo esto son eventos. No estoy seguro que esta ocurriendo aqui.
     // Leyre te lo explico en persona. Pero basicamente, estoy usando el nuevo sistema de Input de Unity para controlar el jugador sin estar usando el Update como haciamos antes.
 
@@ -73,9 +80,10 @@ public class PlayerControl : MonoBehaviour
     #endregion
     private void Start()
     {
+        m_anim=GetComponent<Animator>();
         _lastRotation = transform.rotation.eulerAngles;
         m_gnomeModel=transform.GetChild(0).gameObject;
-        m_stackListParent=transform.GetChild(1).gameObject;
+        m_stackParent=transform.GetChild(1).gameObject;
     }
     private void Update()
     {
@@ -98,7 +106,12 @@ public class PlayerControl : MonoBehaviour
                 break;
             case PlayerState.stacking:
                 playerMovement = MovementControl();
-                m_characterController.Move(playerMovement * Time.deltaTime);
+                m_characterController.Move(playerMovement * Time.deltaTime*_playerSpeedStacked);
+                break;
+            case PlayerState.moving:
+                playerMovement = MovementControl();
+                m_anim.SetFloat("PlayerSpeed", playerMovement.magnitude / _playerSpeed);
+                m_characterController.Move(playerMovement * (Time.deltaTime * _playerSpeed));
                 break;
             default:
                 playerMovement = MovementControl();
@@ -232,12 +245,12 @@ public class PlayerControl : MonoBehaviour
     #region GnomeManagement
     public void AddGnomeToFollowerList(GameObject gnome)
     {
-        _activatedGnomes.Add(gnome);
+        gnome.transform.SetParent(m_activatedGnomesList.transform);
     }
 
     public void RemoveGnomeFromFollowerList(GameObject Gnome)
     {
-        _activatedGnomes.Remove(Gnome);
+        Gnome.transform.SetParent(m_inactiveGnomeList.transform);
     }
     #endregion
 
@@ -255,37 +268,64 @@ public class PlayerControl : MonoBehaviour
 
     private void EndStackCount(InputAction.CallbackContext context)
     {
-        _stackBool = false;
-        _stackAmount = Mathf.FloorToInt(_stackCountTarget);
-        ExecuteStack();
-
+        if (_currentPlayerState==PlayerState.executingStack)
+        {
+            _stackBool = false;
+            _stackAmount = Mathf.FloorToInt(_stackCountTarget);
+            ExecuteStack();
+        }
     }
 
     private void ExecuteStack()
     {
-        Debug.Log(CheckGnomesVSStack());
-        if (CheckGnomesVSStack())
+        CheckGnomesInRange();
+        if (CheckAvailableGnomesVSStackCount())
         {
             addGnomesToStackList(_stackAmount);
-            SpawnEmptiesAndPlaceCharacters(_stackList.Count);
+            SpawnEmptiesAndPlaceCharacters(m_stackGnomeList.childCount);
+        } else
+        {
+            _currentPlayerState = PlayerState.moving;
         }
     }
-
-    private bool CheckGnomesVSStack()
+    private void CheckGnomesInRange()
     {
-        if (_stackAmount == 0 || _activatedGnomes.Count==0) return false;
-        if (_stackAmount < _activatedGnomes.Count) return true;
-        _stackAmount = _activatedGnomes.Count;
+        _gnomesInRange = 0;
+        float distanceToPlayer;
+        GameObject gnome;
+        for (int i= 0; i< m_activatedGnomesList.childCount; i++)
+        {
+            gnome = m_activatedGnomesList.GetChild(i).gameObject;
+            distanceToPlayer = Vector3.Distance(gnome.transform.position, transform.position);
+            if (distanceToPlayer<_callToStackRange)
+            {
+                gnome.GetComponent<GnomeBrain>().ChangeInRangeOfStackCall(true);
+                _gnomesInRange++;
+            }
+        }
+        Debug.Log(_gnomesInRange);
+    }
+    private bool CheckAvailableGnomesVSStackCount()
+    {
+        if (_stackAmount == 0 || _gnomesInRange == 0) return false;
+        if(_stackAmount>_gnomesInRange) _stackAmount=_gnomesInRange; ;
         return true;
     }
 
     private void  addGnomesToStackList(int stack)
     {
-        while (stack > 0)
+        GameObject gnome;
+        while (_stackAmount > 0)
         {
-            _stackList.Add(_activatedGnomes[0]);
-            _activatedGnomes.Remove(_activatedGnomes[0]);
-            stack--;
+            for (int i = 0; i < m_activatedGnomesList.childCount; i++)
+            {
+                gnome = m_activatedGnomesList.GetChild(i).gameObject;
+                if (gnome.GetComponent<GnomeBrain>().ReturnIfInRangeOfStackCall())
+                {
+                    gnome.transform.SetParent(m_stackGnomeList);
+                    _stackAmount--;
+                }
+            }
         }
     }
 
@@ -294,8 +334,8 @@ public class PlayerControl : MonoBehaviour
         Vector3 lastPoint= transform.position;
         for (int i = 0; i < AmountGnomes; i++)
         {
-            var currentGnome = _stackList[i];
-            GameObject newStackEmpty= Instantiate(new GameObject(), m_stackListParent.transform);
+            var currentGnome = m_stackGnomeList.GetChild(i);
+            GameObject newStackEmpty= Instantiate(new GameObject(), m_stackParent.transform);
             newStackEmpty.transform.position = lastPoint;
             currentGnome.GetComponent<GnomeBrain>().ExecuteStack(newStackEmpty, _timeToExecute);
             lastPoint.y += currentGnome.GetComponent<CapsuleCollider>().height+0.1f;
@@ -308,12 +348,12 @@ public class PlayerControl : MonoBehaviour
     
     private void CancelStack ()
     {
-        while (_stackAmount>0)
+        Transform gnome;
+        while (m_stackGnomeList.childCount>0)
         {
-            _stackList[0].GetComponent<GnomeBrain>().CancelStack();
-            _activatedGnomes.Add(_stackList[0]);
-            _stackList.Remove(_stackList[0]);
-            _stackAmount--;
+            gnome = m_stackGnomeList.GetChild(0);
+            gnome.gameObject.GetComponent<GnomeBrain>()?.CancelStack();
+            gnome.SetParent(m_activatedGnomesList);
         }
         m_gnomeModel.transform.position = transform.position;
         m_characterController.Move(new Vector3(0, _playerHeightDifference,0));      
@@ -339,6 +379,5 @@ public class PlayerControl : MonoBehaviour
             Vector3 pushStrength = _playerWeight * _playerMovement;
             pushInterface.Push(pushStrength);
         }
-
     }
 }

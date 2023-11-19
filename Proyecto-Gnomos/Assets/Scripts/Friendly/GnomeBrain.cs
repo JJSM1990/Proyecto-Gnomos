@@ -14,6 +14,7 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
     [SerializeField] private Collider                               m_collider;
     [SerializeField] private Rigidbody                              m_rb;
     private GameObject                                              m_stackPosition;
+    private bool m_inRangeOfStack;
     
     private enum GnomeState
     {
@@ -93,12 +94,21 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
     {
         if (_currentGnomeState==GnomeState.inactive)
         {
-            m_player.GetComponent<PlayerControl>().AddGnomeToFollowerList(this.gameObject);
+            m_player.GetComponent<PlayerControl>()?.AddGnomeToFollowerList(this.gameObject);
             _currentGnomeState = GnomeState.followingPlayer;
             m_tickManager.AddObjectToAGroup(this.gameObject);
         }
     }
 
+    public void ChangeInRangeOfStackCall(bool value)
+    {
+        m_inRangeOfStack = value;
+    }
+
+    public bool ReturnIfInRangeOfStackCall()
+    {
+        return m_inRangeOfStack;
+    }
     public void ExecuteStack(GameObject position, float timeToExecute)
     {
         SwitchNavMeshAgent(false);
@@ -114,6 +124,7 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
         _currentGnomeState = GnomeState.Falling;
         m_rb.AddForce(Random.insideUnitSphere * 10, ForceMode.Impulse);
         StartCoroutine(turnOffOnCollider(0.05f));
+        ChangeInRangeOfStackCall(false);
     }
 
 
@@ -124,7 +135,6 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
         Debug.Log(timeToExecute);
         while (timer < timeToExecute)
         {
-            Debug.Log(timer);
             transform.position = Vector3.Slerp(startPosition, endingPosition, timer / timeToExecute);
             timer += Time.deltaTime;
             yield return new WaitForEndOfFrame();

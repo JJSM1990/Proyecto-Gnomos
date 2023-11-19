@@ -47,7 +47,6 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] private CharacterController        m_characterController;
     private InputActions                                m_inputActions;
     private GameObject                                  m_gnomeModel;
-    private Animator                                    m_anim;
 
     [Header("GnomeLists")]
     [SerializeField] private Transform                  m_activatedGnomesList;
@@ -80,7 +79,6 @@ public class PlayerControl : MonoBehaviour
     #endregion
     private void Start()
     {
-        m_anim=GetComponent<Animator>();
         _lastRotation = transform.rotation.eulerAngles;
         m_gnomeModel=transform.GetChild(0).gameObject;
         m_stackParent=transform.GetChild(1).gameObject;
@@ -110,7 +108,6 @@ public class PlayerControl : MonoBehaviour
                 break;
             case PlayerState.moving:
                 playerMovement = MovementControl();
-                m_anim.SetFloat("PlayerSpeed", playerMovement.magnitude / _playerSpeed);
                 m_characterController.Move(playerMovement * (Time.deltaTime * _playerSpeed));
                 break;
             default:

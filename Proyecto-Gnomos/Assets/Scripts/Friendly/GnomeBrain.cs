@@ -14,7 +14,7 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
     [SerializeField] private Collider                               m_collider;
     [SerializeField] private Rigidbody                              m_rb;
     private GameObject                                              m_stackPosition;
-    private bool m_inRangeOfStack;
+    private bool                                                    m_inRangeOfStack;
     
     private enum GnomeState
     {

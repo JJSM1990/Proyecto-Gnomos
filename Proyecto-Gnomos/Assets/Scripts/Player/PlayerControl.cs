@@ -31,10 +31,10 @@ public class PlayerControl : MonoBehaviour
 
     [Header("Stack Variables")]
     [SerializeField] private float                      _callToStackRange;
-    private int                                         _gnomesInRange;
+    private int                                         _gnomesInRangeCounter;
     [SerializeField] private float                      _playerSpeedStacked;
     [SerializeField] private bool                       _stackBool;
-    [SerializeField] private float                      _stackCountTarget;
+    [SerializeField] private float                      _stackTargerCounter;
     [SerializeField] private int                        _stackAmount;
     [SerializeField] private float                      _stackMultiplier;
     [SerializeField] private float                      _timeToExecute;
@@ -52,6 +52,7 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] private Transform                  m_activatedGnomesList;
     [SerializeField] private Transform                  m_inactiveGnomeList;
     [SerializeField] private Transform                  m_stackGnomeList;
+
     // Todo esto son eventos. No estoy seguro que esta ocurriendo aqui.
     // Leyre te lo explico en persona. Pero basicamente, estoy usando el nuevo sistema de Input de Unity para controlar el jugador sin estar usando el Update como haciamos antes.
 
@@ -87,7 +88,7 @@ public class PlayerControl : MonoBehaviour
     {
         if (_stackBool)
         {
-            _stackCountTarget += (Time.deltaTime * _stackMultiplier);
+            _stackTargerCounter += (Time.deltaTime * _stackMultiplier);
         }
         CheckFalling();
         CharacterMovement();
@@ -257,7 +258,8 @@ public class PlayerControl : MonoBehaviour
     {
         if(_currentPlayerState== PlayerState.moving)
         {
-            _stackCountTarget = 0;
+            CheckGnomesInRange();
+            _stackTargerCounter = 0;
             _currentPlayerState = PlayerState.executingStack;
             _stackBool = true;
         }
@@ -268,14 +270,14 @@ public class PlayerControl : MonoBehaviour
         if (_currentPlayerState==PlayerState.executingStack)
         {
             _stackBool = false;
-            _stackAmount = Mathf.FloorToInt(_stackCountTarget);
+            _stackAmount = Mathf.FloorToInt(_stackTargerCounter);
             ExecuteStack();
         }
     }
 
     private void ExecuteStack()
     {
-        CheckGnomesInRange();
+        
         if (CheckAvailableGnomesVSStackCount())
         {
             addGnomesToStackList(_stackAmount);
@@ -287,7 +289,7 @@ public class PlayerControl : MonoBehaviour
     }
     private void CheckGnomesInRange()
     {
-        _gnomesInRange = 0;
+        _gnomesInRangeCounter = 0;
         float distanceToPlayer;
         GameObject gnome;
         for (int i= 0; i< m_activatedGnomesList.childCount; i++)
@@ -297,15 +299,15 @@ public class PlayerControl : MonoBehaviour
             if (distanceToPlayer<_callToStackRange)
             {
                 gnome.GetComponent<GnomeBrain>().ChangeInRangeOfStackCall(true);
-                _gnomesInRange++;
+                _gnomesInRangeCounter++;
             }
         }
-        Debug.Log(_gnomesInRange);
+        Debug.Log(_gnomesInRangeCounter);
     }
     private bool CheckAvailableGnomesVSStackCount()
     {
-        if (_stackAmount == 0 || _gnomesInRange == 0) return false;
-        if(_stackAmount>_gnomesInRange) _stackAmount=_gnomesInRange; ;
+        if (_stackAmount == 0 || _gnomesInRangeCounter == 0) return false;
+        if(_stackAmount>_gnomesInRangeCounter) _stackAmount=_gnomesInRangeCounter; ;
         return true;
     }
 
@@ -343,7 +345,7 @@ public class PlayerControl : MonoBehaviour
         Debug.Log(_playerHeightDifference);
     }
     
-    private void CancelStack ()
+    public void CancelStack ()
     {
         Transform gnome;
         while (m_stackGnomeList.childCount>0)

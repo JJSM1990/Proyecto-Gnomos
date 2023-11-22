@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5639295391913463872}
   - component: {fileID: 7612836052732945546}
   - component: {fileID: 9143247737919548564}
+  - component: {fileID: 4700273961985481982}
   m_Layer: 0
   m_Name: lamppost
   m_TagString: Untagged
@@ -26,13 +27,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8261508811039212895}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5639295391913463872
 MeshFilter:
@@ -92,8 +93,30 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8261508811039212895}
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
   m_IsTrigger: 0
+  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
+  serializedVersion: 3
   m_Size: {x: 0.6427777, y: 2.974127, z: 0.6427776}
   m_Center: {x: 0, y: 1.4870635, z: 0.00000086426735}
+--- !u!114 &4700273961985481982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8261508811039212895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b778ee16e5ad12942b5a20493adecbab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_normalMaterial: {fileID: 2100000, guid: 1cd256ba8acac3a4bb49758d889d920e, type: 2}
+  m_transparentMaterial: {fileID: 2100000, guid: 46d2fed7542b1424ea70570f0d0c908a, type: 2}

@@ -103,6 +103,17 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
         }
     }
 
+    public bool HasPathToPlayer()
+    {
+        if (m_player == null) return false;
+        NavMeshPath path = new NavMeshPath() ;
+        m_navAgent.CalculatePath(m_player.transform.position, path);
+        var status = path.status;
+        if (status== NavMeshPathStatus.PathComplete) return true;
+        return false;
+
+    }
+
     public void ChangeInRangeOfStackCall(bool value)
     {
         m_inRangeOfStack = value;
@@ -130,7 +141,13 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
         ChangeInRangeOfStackCall(false);
     }
 
-
+    public void Deactivate()
+    {
+        if(_currentGnomeState!=GnomeState.inactive)
+        {
+            m_player.GetComponent<PlayerControl>().RemoveGnomeFromFollowerList(this.gameObject);
+        }
+    }
     private IEnumerator Stack(Vector3 endingPosition, float timeToExecute)
     {
         float timer = 0f;

@@ -296,7 +296,7 @@ public class PlayerControl : MonoBehaviour
         {
             gnome = m_activatedGnomesList.GetChild(i).gameObject;
             distanceToPlayer = Vector3.Distance(gnome.transform.position, transform.position);
-            if (distanceToPlayer<_callToStackRange)
+            if (distanceToPlayer<_callToStackRange && gnome.GetComponent<GnomeBrain>().HasPathToPlayer())
             {
                 gnome.GetComponent<GnomeBrain>().ChangeInRangeOfStackCall(true);
                 _gnomesInRangeCounter++;

@@ -5037,7 +5037,7 @@ GameObject:
   - component: {fileID: 5994780846975459360}
   - component: {fileID: 5564048525302756007}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: DamageTarget
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

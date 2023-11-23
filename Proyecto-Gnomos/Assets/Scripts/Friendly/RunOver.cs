@@ -14,5 +14,9 @@ public class RunOver : MonoBehaviour
             other.gameObject.GetComponent<GnomeBrain>().RunnedOver();   
 
         }
+        if(other.tag == "Player")
+        {
+            other.gameObject.GetComponent<PlayerControl>().Kill();
+        }
     }
 }

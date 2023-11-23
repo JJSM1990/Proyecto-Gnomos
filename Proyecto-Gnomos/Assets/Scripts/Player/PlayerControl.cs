@@ -5,6 +5,7 @@ using Unity.VisualScripting.Antlr3.Runtime.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(Rigidbody))]
 public class PlayerControl : MonoBehaviour
 {
     //Para controllar el movimiento del jugador usare el enum PlayerState.
@@ -12,7 +13,7 @@ public class PlayerControl : MonoBehaviour
     //Si queremos añadir nuevas cosas es mucho mas sencillo hacerlo asi y mantenemos el codigo limpio (por ejemplo slide, sprint, etc)
     private enum PlayerState
     {
-        falling, jumping, moving, executingStack, stacking
+        falling, jumping, moving, executingStack, stacking, dead
     }
     [SerializeField] private PlayerState _currentPlayerState;
 
@@ -47,6 +48,7 @@ public class PlayerControl : MonoBehaviour
     [SerializeField] private CharacterController        m_characterController;
     private InputActions                                m_inputActions;
     private GameObject                                  m_gnomeModel;
+    private Rigidbody                                   m_rb;
 
     [Header("GnomeLists")]
     [SerializeField] private Transform                  m_activatedGnomesList;
@@ -56,6 +58,11 @@ public class PlayerControl : MonoBehaviour
     // Todo esto son eventos. No estoy seguro que esta ocurriendo aqui.
     // Leyre te lo explico en persona. Pero basicamente, estoy usando el nuevo sistema de Input de Unity para controlar el jugador sin estar usando el Update como haciamos antes.
 
+    private void Awake()
+    {
+        m_rb= GetComponent<Rigidbody>();    
+        m_rb.isKinematic = true;
+    }
     #region Events
     private void OnEnable()
     {
@@ -124,6 +131,8 @@ public class PlayerControl : MonoBehaviour
         lookAt.y = 0;
         switch (_currentPlayerState)
         {
+            case PlayerState.dead:
+                break;
             case PlayerState.falling:
             case PlayerState.jumping:
                 if (lookAt.magnitude>0f)
@@ -169,9 +178,10 @@ public class PlayerControl : MonoBehaviour
     private Vector3 MovementControl()
     {
         //Segun _currentPlayerState vamos a ir rotando por lo que el jugador puede hacer o no
-
         switch (_currentPlayerState)
         {
+            case PlayerState.dead:
+                break;
             case PlayerState.executingStack:
                 _playerMovement = Vector3.zero;
                 break;
@@ -203,6 +213,7 @@ public class PlayerControl : MonoBehaviour
     {
             switch (_currentPlayerState)
             {
+            
                 case PlayerState.falling:
                 if (m_characterController.isGrounded)
                 {
@@ -370,6 +381,16 @@ public class PlayerControl : MonoBehaviour
         _currentPlayerState = PlayerState.stacking;
     }
     #endregion
+
+#region PlayerDeath
+    public void Kill()
+    {
+       //GameManager.instance
+       m_rb.isKinematic= false;
+       m_rb.AddForce(transform.up * 2 + transform.forward * -5, ForceMode.Impulse);
+
+    }
+#endregion
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         var pushInterface = hit.collider.GetComponent<IPushableByPlayer>();

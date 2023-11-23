@@ -6,28 +6,28 @@ using UnityEngine.AI;
 
 public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
 {
-    [SerializeField] private GameManager                            m_gameManager;
-    [SerializeField] private GameObject                             m_player;
-    [SerializeField] private TickManager                            m_tickManager;
-    [SerializeField] private float                                  _minimumDistanceToFollowPlayer;
-    [SerializeField] private NavMeshAgent                           m_navAgent;
-    [SerializeField] private Collider                               m_collider;
-    [SerializeField] private Rigidbody                              m_rb;
-    private GameObject                                              m_stackPosition;
-    private bool                                                    m_inRangeOfStack;
+    [SerializeField] private GameManager m_gameManager;
+    [SerializeField] private GameObject m_player;
+    [SerializeField] private TickManager m_tickManager;
+    [SerializeField] private float _minimumDistanceToFollowPlayer;
+    [SerializeField] private NavMeshAgent m_navAgent;
+    [SerializeField] private Collider m_collider;
+    [SerializeField] private Rigidbody m_rb;
+    private GameObject m_stackPosition;
+    private bool m_inRangeOfStack;
 
 
-    private float m_scaleChange = 0.1f;
-    
+    private Vector3 m_scaleChange = new Vector3(1,0.1f,1);
+
     private enum GnomeState
     {
         inactive, followingPlayer, Stopped, InStack, MovingToStack, Falling
     }
-    private GnomeState _currentGnomeState=GnomeState.inactive;
+    private GnomeState _currentGnomeState = GnomeState.inactive;
     private void Start()
     {
-        
-        m_gameManager=GameManager.Instance;
+
+        m_gameManager = GameManager.Instance;
         m_player = m_gameManager.ReturnPlayer();
         m_tickManager = m_gameManager.ReturnTickManager();
         m_navAgent = GetComponent<NavMeshAgent>();
@@ -54,10 +54,10 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
     public void UpdateTick()
     {
         float distanceToPlayer = Vector3.Distance(m_player.transform.position, this.gameObject.transform.position);
-        switch (_currentGnomeState) 
+        switch (_currentGnomeState)
         {
             case GnomeState.followingPlayer:
-                if (distanceToPlayer> _minimumDistanceToFollowPlayer && NavMesh.SamplePosition(m_player.transform.position, out NavMeshHit hitFollow, 2f, NavMesh.AllAreas))
+                if (distanceToPlayer > _minimumDistanceToFollowPlayer && NavMesh.SamplePosition(m_player.transform.position, out NavMeshHit hitFollow, 2f, NavMesh.AllAreas))
                 {
                     NavMeshPath path = new NavMeshPath();
                     m_navAgent.CalculatePath(hitFollow.position, path);
@@ -84,7 +84,7 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
     }
     private void limitRBvelocity()
     {
-        if (m_rb.velocity.magnitude>5)
+        if (m_rb.velocity.magnitude > 5)
         {
             m_rb.velocity = Vector3.ClampMagnitude(m_rb.velocity, 5f);
         }
@@ -95,8 +95,10 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
     }
     public void Activate()
     {
-        if (_currentGnomeState==GnomeState.inactive)
+        if (_currentGnomeState == GnomeState.inactive)
         {
+            m_navAgent.enabled = true;
+            transform.localScale= new Vector3(1,1,1);   
             m_player.GetComponent<PlayerControl>()?.AddGnomeToFollowerList(this.gameObject);
             _currentGnomeState = GnomeState.followingPlayer;
             m_tickManager.AddObjectToAGroup(this.gameObject);
@@ -106,14 +108,23 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
     public bool HasPathToPlayer()
     {
         if (m_player == null) return false;
-        NavMeshPath path = new NavMeshPath() ;
+        NavMeshPath path = new NavMeshPath();
         m_navAgent.CalculatePath(m_player.transform.position, path);
         var status = path.status;
-        if (status== NavMeshPathStatus.PathComplete) return true;
+        if (status == NavMeshPathStatus.PathComplete) return true;
         return false;
 
     }
 
+    public void RunnedOver()
+    {
+        if(_currentGnomeState != GnomeState.inactive)
+        {
+            transform.localScale = m_scaleChange;
+            Deactivate();
+        }
+
+    }
     public void ChangeInRangeOfStackCall(bool value)
     {
         m_inRangeOfStack = value;
@@ -136,7 +147,7 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
         m_collider.enabled = true;
         m_rb.isKinematic = false;
         _currentGnomeState = GnomeState.Falling;
-        m_rb.AddForce(new Vector3(Random.Range(-1f,1f),1,-2) * 5);
+        m_rb.AddForce(new Vector3(Random.Range(-1f,1f),1,-2) * 5, ForceMode.Impulse);
         StartCoroutine(turnOffOnCollider(0.05f));
         ChangeInRangeOfStackCall(false);
     }
@@ -146,6 +157,8 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
         if(_currentGnomeState!=GnomeState.inactive)
         {
             m_player.GetComponent<PlayerControl>().RemoveGnomeFromFollowerList(this.gameObject);
+            m_navAgent.enabled = false;
+            _currentGnomeState=GnomeState.inactive; 
         }
     }
     private IEnumerator Stack(Vector3 endingPosition, float timeToExecute)

@@ -64,7 +64,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: GnomeTall
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3880160128480507940, guid: 9cee0172d984950469ac5e5e37810aae, type: 3}
     m_RemovedGameObjects:
     - {fileID: 6170803029749517480, guid: 9cee0172d984950469ac5e5e37810aae, type: 3}
     m_AddedGameObjects:

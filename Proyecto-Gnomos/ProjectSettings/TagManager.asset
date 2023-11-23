@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Pushable
   - Enviroment
+  - Car
   layers:
   - Default
   - TransparentFX

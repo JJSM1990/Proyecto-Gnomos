@@ -87,11 +87,13 @@ public class CarMovement : MonoBehaviour
         RaycastHit hit;
         Vector3 rayDir = (m_player.transform.position + m_player.GetComponent<CharacterController>().center) - transform.position;
         float distanceToPlayer = Vector3.Distance(transform.position, m_player.transform.position);
-
+        
         if (Vector3.Angle(transform.forward, rayDir ) < viewAngle && distanceToPlayer < minPlayerDetectionDistance)
         {
-            if (Physics.Raycast(transform.position, rayDir, out hit))
+
+            if (Physics.Raycast(transform.position, rayDir, out hit,10000, -1, QueryTriggerInteraction.Ignore))
             {
+                Debug.Log("Raycast");
                 if (hit.collider.tag == "Player")
                 {
                     m_playerIsSeen = true;
@@ -119,7 +121,6 @@ public class CarMovement : MonoBehaviour
         }
   
     }
-
     private void ChangeState()
     {
         switch (m_currentState)
@@ -154,21 +155,22 @@ public class CarMovement : MonoBehaviour
         m_preparingCoroutine = null;   
     }
 
-    private void OnDrawGizmos()
-    {
-        //Vector3 rayDir = (m_player.transform.position + m_player.GetComponent<CharacterController>().center) - transform.position;
-        //float distanceToPlayer = Vector3.Distance(transform.position, m_player.transform.position);
-        //if (Vector3.Angle(transform.forward, rayDir) < viewAngle && distanceToPlayer < minPlayerDetectionDistance)
-        //{
-        //    Gizmos.color = Color.green;
-        //} else
-        //{
-        //    Gizmos.color= Color.red;
-        //}
+    //    private void OnDrawGizmos()
+    //    {
+    //        Vector3 rayDir = (m_player.transform.position + m_player.GetComponent<CharacterController>().center) - transform.position;
+    //        float distanceToPlayer = Vector3.Distance(transform.position, m_player.transform.position);
+    //        if (Vector3.Angle(transform.forward, rayDir) < viewAngle && distanceToPlayer < minPlayerDetectionDistance)
+    //        {
+    //            Gizmos.color = Color.green;
+    //        }
+    //        else
+    //        {
+    //            Gizmos.color = Color.red;
+    //        }
 
-        //Gizmos.DrawRay(new Ray(transform.position, m_player.transform.position - transform.position));
-        //Gizmos.DrawSphere(transform.position, minPlayerDetectionDistance);      
-    }
+    //        Gizmos.DrawRay(new Ray(transform.position, m_player.transform.position - transform.position));
+    //        Gizmos.DrawSphere(transform.position, minPlayerDetectionDistance);
+    //    }
 
 
 }

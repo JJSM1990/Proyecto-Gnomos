@@ -105,6 +105,15 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
         }
     }
 
+    public void Deactivate()
+    {
+        if (_currentGnomeState != GnomeState.inactive)
+        {
+            m_player.GetComponent<PlayerControl>().RemoveGnomeFromFollowerList(this.gameObject);
+            m_navAgent.enabled = false;
+            _currentGnomeState = GnomeState.inactive;
+        }
+    }
     public bool HasPathToPlayer()
     {
         if (m_player == null) return false;
@@ -154,15 +163,7 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
         ChangeInRangeOfStackCall(false);
     }
 
-    public void Deactivate()
-    {
-        if(_currentGnomeState!=GnomeState.inactive)
-        {
-            m_player.GetComponent<PlayerControl>().RemoveGnomeFromFollowerList(this.gameObject);
-            m_navAgent.enabled = false;
-            _currentGnomeState=GnomeState.inactive; 
-        }
-    }
+
     private IEnumerator Stack(Vector3 endingPosition, float timeToExecute)
     {
         float timer = 0f;

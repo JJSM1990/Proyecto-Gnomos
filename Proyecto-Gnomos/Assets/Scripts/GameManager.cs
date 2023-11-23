@@ -11,8 +11,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject m_activatedList;
     [SerializeField] private GameObject m_deactivatedList;
     [SerializeField] private GameObject m_stackList;
-    private GameObject m_lastCheckpoint;
-    private float m_activeGnomesOnLastCheckPoint;
+    [SerializeField] private GameObject m_lastCheckpoint;
+    [SerializeField] private int m_activeGnomesOnLastCheckPoint;
 
     public void Awake()
     {
@@ -21,7 +21,6 @@ public class GameManager : MonoBehaviour
         else
             Destroy(gameObject);
     }
-
 
     public GameObject ReturnPlayer()
     {
@@ -33,10 +32,40 @@ public class GameManager : MonoBehaviour
         return m_tickManager;
     }
 
-    public void updateCheckpoint(GameObject checkpoint, float currentActiveGnomes)
+    public void updateCheckpoint(GameObject checkpoint, int currentActiveGnomes)
     {
         m_lastCheckpoint= checkpoint;
         m_activeGnomesOnLastCheckPoint= currentActiveGnomes;
+    }
 
+    public void BeginRespawn()
+    {
+        StartCoroutine(RespawnCountdown(1f));
+    }
+
+    private void Respawn()
+    {
+        int gnomeTarget = m_activeGnomesOnLastCheckPoint; 
+        m_player.transform.position=m_lastCheckpoint.transform.position;
+        GameObject gnome;
+        while (gnomeTarget>0)
+        {
+            gnome = m_deactivatedList.transform.GetChild(0).gameObject;
+            gnome.transform.position = m_lastCheckpoint.transform.position;
+            gnome.GetComponent<GnomeBrain>().Activate();
+            gnomeTarget--;
+        }
+        m_player.GetComponent<PlayerControl>().Respawn();
+    }
+
+    private IEnumerator RespawnCountdown(float respawnTimer)
+    {
+        float time = 0f;
+        while (time < respawnTimer)
+        {
+            time += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        Respawn();
     }
 }

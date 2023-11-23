@@ -13,7 +13,7 @@ public class PlayerControl : MonoBehaviour
     //Si queremos añadir nuevas cosas es mucho mas sencillo hacerlo asi y mantenemos el codigo limpio (por ejemplo slide, sprint, etc)
     private enum PlayerState
     {
-        falling, jumping, moving, executingStack, stacking, dead
+        Falling, Jumping, Moving, ExecutingStack, Stacking, Dead
     }
     [SerializeField] private PlayerState _currentPlayerState;
 
@@ -108,13 +108,15 @@ public class PlayerControl : MonoBehaviour
         Vector3 playerMovement;
         switch (_currentPlayerState)
         {
-            case PlayerState.executingStack:
+            case PlayerState.Dead:
                 break;
-            case PlayerState.stacking:
+            case PlayerState.ExecutingStack:
+                break;
+            case PlayerState.Stacking:
                 playerMovement = MovementControl();
                 m_characterController.Move(playerMovement * Time.deltaTime*_playerSpeedStacked);
                 break;
-            case PlayerState.moving:
+            case PlayerState.Moving:
                 playerMovement = MovementControl();
                 m_characterController.Move(playerMovement * (Time.deltaTime * _playerSpeed));
                 break;
@@ -131,10 +133,10 @@ public class PlayerControl : MonoBehaviour
         lookAt.y = 0;
         switch (_currentPlayerState)
         {
-            case PlayerState.dead:
+            case PlayerState.Dead:
                 break;
-            case PlayerState.falling:
-            case PlayerState.jumping:
+            case PlayerState.Falling:
+            case PlayerState.Jumping:
                 if (lookAt.magnitude>0f)
                 {
                     transform.rotation = Quaternion.LookRotation(lookAt);
@@ -157,19 +159,19 @@ public class PlayerControl : MonoBehaviour
     {
         switch (_currentPlayerState)
         {
-            case PlayerState.falling:
+            case PlayerState.Falling:
                 break;
-            case PlayerState.jumping:
+            case PlayerState.Jumping:
                 break;
-            case PlayerState.moving:
-                _currentPlayerState = PlayerState.jumping;
+            case PlayerState.Moving:
+                _currentPlayerState = PlayerState.Jumping;
                 StartCoroutine(EndJump());
                 break;
-            case PlayerState.executingStack:
+            case PlayerState.ExecutingStack:
                 break;
-            case PlayerState.stacking:
+            case PlayerState.Stacking:
                 CancelStack();
-                _currentPlayerState = PlayerState.jumping;
+                _currentPlayerState = PlayerState.Jumping;
                 StartCoroutine(EndJump());
                 break;
         }
@@ -180,16 +182,16 @@ public class PlayerControl : MonoBehaviour
         //Segun _currentPlayerState vamos a ir rotando por lo que el jugador puede hacer o no
         switch (_currentPlayerState)
         {
-            case PlayerState.dead:
+            case PlayerState.Dead:
                 break;
-            case PlayerState.executingStack:
+            case PlayerState.ExecutingStack:
                 _playerMovement = Vector3.zero;
                 break;
-            case PlayerState.jumping:
+            case PlayerState.Jumping:
                 TranslatingHorizontalInputToMovement(_flatMoveInputV2);
                 _playerMovement.y = _jumpingSpeed;
                 break;
-            case PlayerState.falling:
+            case PlayerState.Falling:
                 TranslatingHorizontalInputToMovement(_flatMoveInputV2);
                 _playerMovement.y -= _fallingSpeed * Time.deltaTime;
                 break;
@@ -214,10 +216,10 @@ public class PlayerControl : MonoBehaviour
             switch (_currentPlayerState)
             {
             
-                case PlayerState.falling:
+                case PlayerState.Falling:
                 if (m_characterController.isGrounded)
                 {
-                    _currentPlayerState = PlayerState.moving;
+                    _currentPlayerState = PlayerState.Moving;
                 }
                     break;
                 default:
@@ -225,15 +227,15 @@ public class PlayerControl : MonoBehaviour
                 {
                     switch (_currentPlayerState)
                     {
-                        case PlayerState.jumping:
-                        case PlayerState.falling:
+                        case PlayerState.Jumping:
+                        case PlayerState.Falling:
                             break;
-                        case PlayerState.stacking:
+                        case PlayerState.Stacking:
                             CancelStack();
-                            _currentPlayerState = PlayerState.falling;
+                            _currentPlayerState = PlayerState.Falling;
                             break;
                         default:
-                            _currentPlayerState = PlayerState.falling;
+                            _currentPlayerState = PlayerState.Falling;
                             break;
                     }
                 }
@@ -244,7 +246,7 @@ public class PlayerControl : MonoBehaviour
     IEnumerator EndJump()
     {
         yield return new WaitForSeconds(0.1f);
-        _currentPlayerState = PlayerState.falling;
+        _currentPlayerState = PlayerState.Falling;
     }
 
 
@@ -261,24 +263,30 @@ public class PlayerControl : MonoBehaviour
     {
         Gnome.transform.SetParent(m_inactiveGnomeList.transform);
     }
+
+    public int ReturnTotalGnomeFollowers()
+    {
+        int count= m_activatedGnomesList.childCount+m_stackGnomeList.childCount;
+        return count;
+    }
     #endregion
 
     #region Stacking
 
     private void StartStackCount(InputAction.CallbackContext context)
     {
-        if(_currentPlayerState== PlayerState.moving)
+        if(_currentPlayerState== PlayerState.Moving)
         {
             CheckGnomesInRange();
             _stackTargerCounter = 0;
-            _currentPlayerState = PlayerState.executingStack;
+            _currentPlayerState = PlayerState.ExecutingStack;
             _stackBool = true;
         }
     }
 
     private void EndStackCount(InputAction.CallbackContext context)
     {
-        if (_currentPlayerState==PlayerState.executingStack)
+        if (_currentPlayerState==PlayerState.ExecutingStack)
         {
             _stackBool = false;
             _stackAmount = Mathf.FloorToInt(_stackTargerCounter);
@@ -295,7 +303,7 @@ public class PlayerControl : MonoBehaviour
             SpawnEmptiesAndPlaceCharacters(m_stackGnomeList.childCount);
         } else
         {
-            _currentPlayerState = PlayerState.moving;
+            _currentPlayerState = PlayerState.Moving;
         }
     }
     private void CheckGnomesInRange()
@@ -358,15 +366,18 @@ public class PlayerControl : MonoBehaviour
     
     public void CancelStack ()
     {
-        Transform gnome;
-        while (m_stackGnomeList.childCount>0)
+        if (_currentPlayerState == PlayerState.Stacking)
         {
-            gnome = m_stackGnomeList.GetChild(0);
-            gnome.gameObject.GetComponent<GnomeBrain>()?.CancelStack();
-            gnome.SetParent(m_activatedGnomesList);
+            Transform gnome;
+            while (m_stackGnomeList.childCount > 0)
+            {
+                gnome = m_stackGnomeList.GetChild(0);
+                gnome.gameObject.GetComponent<GnomeBrain>()?.CancelStack();
+                gnome.SetParent(m_activatedGnomesList);
+            }
+            m_gnomeModel.transform.position = transform.position;
+            m_characterController.Move(new Vector3(0, _playerHeightDifference, 0));
         }
-        m_gnomeModel.transform.position = transform.position;
-        m_characterController.Move(new Vector3(0, _playerHeightDifference,0));      
     }
     private IEnumerator PlacePlayer(Vector3 position, float timeToExecute)
     {
@@ -378,17 +389,34 @@ public class PlayerControl : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
         m_gnomeModel.transform.position=position;
-        _currentPlayerState = PlayerState.stacking;
+        _currentPlayerState = PlayerState.Stacking;
     }
     #endregion
 
 #region PlayerDeath
     public void Kill()
     {
-       //GameManager.instance
-       m_rb.isKinematic= false;
-       m_rb.AddForce(transform.up * 2 + transform.forward * -5, ForceMode.Impulse);
+        //GameManager.Instance;
+        m_rb.isKinematic= false;
+        m_characterController.enabled = false;
+        CancelStack();
+        _currentPlayerState = PlayerState.Dead;
+        m_rb.AddForce(transform.up * 10 + transform.forward * -1, ForceMode.Impulse);
+        GameObject gnome;
+        while (m_activatedGnomesList.childCount>0)
+        {
+            gnome = m_activatedGnomesList.GetChild(0).gameObject;
+            gnome.GetComponent<GnomeBrain>().Deactivate();
+        }
+        GameManager.Instance.BeginRespawn();
+    }
 
+    public void Respawn()
+    {
+        Debug.Log("PlayerRevived");
+        m_rb.isKinematic = true;
+        m_characterController.enabled = true;
+        _currentPlayerState = PlayerState.Falling;
     }
 #endregion
     private void OnControllerColliderHit(ControllerColliderHit hit)
@@ -399,7 +427,7 @@ public class PlayerControl : MonoBehaviour
             Vector3 pushStrength;
             switch (_currentPlayerState)
             {
-                case PlayerState.stacking:
+                case PlayerState.Stacking:
                     pushStrength = _playerWeight * _playerMovement * m_stackGnomeList.childCount;
                     pushInterface.Push(pushStrength);
                     break;

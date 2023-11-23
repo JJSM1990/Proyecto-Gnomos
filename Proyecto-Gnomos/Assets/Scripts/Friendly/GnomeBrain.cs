@@ -136,7 +136,7 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
         m_collider.enabled = true;
         m_rb.isKinematic = false;
         _currentGnomeState = GnomeState.Falling;
-        m_rb.AddForce(new Vector3(0,1,1) * 5);
+        m_rb.AddForce(new Vector3(Random.Range(-1f,1f),1,-2) * 5);
         StartCoroutine(turnOffOnCollider(0.05f));
         ChangeInRangeOfStackCall(false);
     }

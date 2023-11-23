@@ -17549,14 +17549,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 4681416245171972399, guid: 4e13365a0141e884ca506cc4476ef3b0, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 1.764
-      objectReference: {fileID: 0}
-    - target: {fileID: 4681416245171972399, guid: 4e13365a0141e884ca506cc4476ef3b0, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 2.391
-      objectReference: {fileID: 0}
     - target: {fileID: 5353625390538714891, guid: 4e13365a0141e884ca506cc4476ef3b0, type: 3}
       propertyPath: prewarm
       value: 0
@@ -17785,11 +17777,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_player: {fileID: 340183809}
   m_tickManager: {fileID: 1163805705}
-<<<<<<< Updated upstream
-  m_activatedList: {fileID: 281393521}
-  m_deactivatedList: {fileID: 231805649}
-  m_stackList: {fileID: 811814581}
-=======
 --- !u!1 &1329661827
 GameObject:
   m_ObjectHideFlags: 0
@@ -17893,7 +17880,6 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
->>>>>>> Stashed changes
 --- !u!1001 &1339354837
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25019,10 +25005,6 @@ PrefabInstance:
     - target: {fileID: 1662637976637881043, guid: e5bf29c7d7229914391847dab9a0b115, type: 3}
       propertyPath: m_Enabled
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2448190331187255088, guid: e5bf29c7d7229914391847dab9a0b115, type: 3}
-      propertyPath: m_TagString
-      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 3684580924763624364, guid: e5bf29c7d7229914391847dab9a0b115, type: 3}
       propertyPath: m_Name

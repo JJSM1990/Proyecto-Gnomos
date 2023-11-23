@@ -314,7 +314,7 @@ public class PlayerControl : MonoBehaviour
     private void  addGnomesToStackList(int stack)
     {
         GameObject gnome;
-        while (_stackAmount > 0)
+        while (stack > 0)
         {
             for (int i = 0; i < m_activatedGnomesList.childCount; i++)
             {
@@ -322,7 +322,7 @@ public class PlayerControl : MonoBehaviour
                 if (gnome.GetComponent<GnomeBrain>().ReturnIfInRangeOfStackCall())
                 {
                     gnome.transform.SetParent(m_stackGnomeList);
-                    _stackAmount--;
+                    stack--;
                 }
             }
         }
@@ -375,8 +375,19 @@ public class PlayerControl : MonoBehaviour
         var pushInterface = hit.collider.GetComponent<IPushableByPlayer>();
         if (pushInterface != null && hit.moveDirection.y > -0.6f)
         {
-            Vector3 pushStrength = _playerWeight * _playerMovement;
-            pushInterface.Push(pushStrength);
+            Vector3 pushStrength;
+            switch (_currentPlayerState)
+            {
+                case PlayerState.stacking:
+                    pushStrength = _playerWeight * _playerMovement * m_stackGnomeList.childCount;
+                    pushInterface.Push(pushStrength);
+                    break;
+                default:
+                    pushStrength = _playerWeight * _playerMovement;
+                    pushInterface.Push(pushStrength);
+                    break;
+            }
+
         }
     }
 }

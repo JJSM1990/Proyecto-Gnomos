@@ -15,7 +15,7 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
     [SerializeField] private Rigidbody m_rb;
     private GameObject m_stackPosition;
     private bool m_inRangeOfStack;
-
+    [SerializeField] private Animator m_anim;
 
     private Vector3 m_scaleChange = new Vector3(1,0.1f,1);
 
@@ -40,11 +40,18 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
             case GnomeState.InStack:
                 transform.position = m_stackPosition.transform.position;
                 transform.rotation = m_stackPosition.transform.rotation;
+                m_anim.SetFloat("AnimationSpeed", 0);
                 break;
             case GnomeState.Falling:
                 limitRBvelocity();
+                m_anim.SetFloat("AnimationSpeed", 0);
+                break;
+            case GnomeState.followingPlayer:
+                float AnimSpeed=(m_navAgent.velocity.magnitude / m_navAgent.speed)*4;
+                m_anim.SetFloat("AnimationSpeed", AnimSpeed);
                 break;
             default:
+                m_anim.SetFloat("AnimationSpeed", 0);
                 break;
         }
     }

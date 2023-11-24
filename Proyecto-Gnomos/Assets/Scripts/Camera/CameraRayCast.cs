@@ -37,6 +37,7 @@ public class CameraRayCast : MonoBehaviour
                     if (!newHitArray.Contains(oldHit))
                     {
                         oldHit.collider.GetComponent<TransparencyChanger>()?.ChangeMaterialToNormal();
+                        oldHit.collider.GetComponent<TransparencyRedirector>()?.MakeOpaque();
                     }
                 }
             }
@@ -45,6 +46,7 @@ public class CameraRayCast : MonoBehaviour
                 if (!m_PreviousHits.Contains(hit))
                 {
                     hit.collider.GetComponent<TransparencyChanger>()?.ChangeMaterialToTransparent();
+                    hit.collider.GetComponent<TransparencyRedirector>()?.MakeTransparent();
                 }
             }
             m_PreviousHits=newHitArray;

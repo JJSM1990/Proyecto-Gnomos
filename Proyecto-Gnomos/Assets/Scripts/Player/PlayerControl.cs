@@ -49,6 +49,7 @@ public class PlayerControl : MonoBehaviour
     private InputActions                                m_inputActions;
     private GameObject                                  m_gnomeModel;
     private Rigidbody                                   m_rb;
+    [SerializeField] private Animator                   m_anim;
 
     [Header("GnomeLists")]
     [SerializeField] private Transform                  m_activatedGnomesList;
@@ -109,6 +110,7 @@ public class PlayerControl : MonoBehaviour
         switch (_currentPlayerState)
         {
             case PlayerState.Dead:
+                m_anim.SetFloat("AnimationSpeed", 0);
                 break;
             case PlayerState.ExecutingStack:
                 break;
@@ -118,10 +120,13 @@ public class PlayerControl : MonoBehaviour
                 break;
             case PlayerState.Moving:
                 playerMovement = MovementControl();
+                if (playerMovement.magnitude> 0.5f) m_anim.SetFloat("AnimationSpeed", 3);
+                    else m_anim.SetFloat("AnimationSpeed", 0);
                 m_characterController.Move(playerMovement * (Time.deltaTime * _playerSpeed));
                 break;
             default:
                 playerMovement = MovementControl();
+                m_anim.SetFloat("AnimationSpeed", 0);
                 m_characterController.Move(playerMovement * (Time.deltaTime* _playerSpeed));
                 break;
         }

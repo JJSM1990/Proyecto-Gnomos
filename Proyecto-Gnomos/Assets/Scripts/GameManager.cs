@@ -19,7 +19,8 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
             Instance = this;
         else
-            Destroy(gameObject);
+            Destroy(this);
+        DontDestroyOnLoad(this);
     }
 
     public GameObject ReturnPlayer()

@@ -402,12 +402,6 @@ public class PlayerControl : MonoBehaviour
         CancelStack();
         _currentPlayerState = PlayerState.Dead;
         m_rb.AddForce(transform.up * 10 + transform.forward * -1, ForceMode.Impulse);
-        GameObject gnome;
-        while (m_activatedGnomesList.childCount>0)
-        {
-            gnome = m_activatedGnomesList.GetChild(0).gameObject;
-            gnome.GetComponent<GnomeBrain>().Deactivate();
-        }
         GameManager.Instance.BeginRespawn();
     }
 

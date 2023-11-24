@@ -45,16 +45,17 @@ public class GameManager : MonoBehaviour
 
     private void Respawn()
     {
-        int gnomeTarget = m_activeGnomesOnLastCheckPoint; 
         m_player.transform.position=m_lastCheckpoint.transform.position;
         GameObject gnome;
-        while (gnomeTarget>0)
+        for (int i = 0; i < m_activatedList.transform.childCount; i++)
         {
-            gnome = m_deactivatedList.transform.GetChild(0).gameObject;
-            gnome.transform.position = m_lastCheckpoint.transform.position;
-            gnome.GetComponent<GnomeBrain>().Activate();
-            gnomeTarget--;
+            gnome = m_activatedList.transform.GetChild(i).gameObject;
+            gnome.GetComponent<GnomeBrain>().SwitchToFalling();
+            gnome.transform.position = m_lastCheckpoint.transform.position+Random.insideUnitSphere*0.25f;
         }
+        
+            
+        
         m_player.GetComponent<PlayerControl>().Respawn();
     }
 

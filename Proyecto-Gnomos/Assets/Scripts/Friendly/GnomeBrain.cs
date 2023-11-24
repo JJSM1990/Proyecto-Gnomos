@@ -153,9 +153,7 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
     }
     public void CancelStack()
     {
-        m_collider.enabled = true;
-        m_rb.isKinematic = false;
-        _currentGnomeState = GnomeState.Falling;
+        SwitchToFalling();
         Vector3 pushVector = new Vector3(Random.Range(-1f, 1f), 1, -2);
         pushVector = Vector3.Scale(pushVector, transform.forward)*10;
         m_rb.AddForce(pushVector, ForceMode.Impulse);
@@ -163,7 +161,12 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
         ChangeInRangeOfStackCall(false);
     }
 
-
+    public void SwitchToFalling()
+    {
+        m_collider.enabled = true;
+        m_rb.isKinematic = false;
+        _currentGnomeState = GnomeState.Falling;
+    }
     private IEnumerator Stack(Vector3 endingPosition, float timeToExecute)
     {
         float timer = 0f;

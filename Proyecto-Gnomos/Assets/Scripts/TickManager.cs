@@ -84,8 +84,19 @@ public class TickManager : MonoBehaviour
         _tickGrouping.Add(newGroup);
     }
 
+    public void TickExit()
+    {
+        foreach (TickGroup group in _tickGrouping)
+        {
+            foreach (GameObject gnome in group._members)
+            {
+                group._members.Remove(gnome);
+            }
+            _tickGrouping.Remove(group);
+        }
+    }
 
-    IEnumerator TickUpdate()
+    private IEnumerator TickUpdate()
     {
         int i = 0;
         foreach(TickGroup group in _tickGrouping)

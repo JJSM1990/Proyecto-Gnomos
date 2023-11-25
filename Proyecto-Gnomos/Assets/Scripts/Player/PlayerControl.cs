@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UIManager;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerControl : MonoBehaviour
@@ -97,6 +98,7 @@ public class PlayerControl : MonoBehaviour
         if (_stackBool)
         {
             _stackTargerCounter += (Time.deltaTime * _stackMultiplier);
+            GameManager.Instance.UpdateStackUI(_stackTargerCounter);
         }
         CheckFalling();
         CharacterMovement();
@@ -286,7 +288,9 @@ public class PlayerControl : MonoBehaviour
             _stackTargerCounter = 0;
             _currentPlayerState = PlayerState.ExecutingStack;
             _stackBool = true;
+            GameManager.Instance.StartStackUI(_gnomesInRangeCounter);
         }
+
     }
 
     private void EndStackCount(InputAction.CallbackContext context)
@@ -296,6 +300,7 @@ public class PlayerControl : MonoBehaviour
             _stackBool = false;
             _stackAmount = Mathf.FloorToInt(_stackTargerCounter);
             ExecuteStack();
+            GameManager.Instance.EndStackUI();
         }
     }
 
@@ -363,10 +368,8 @@ public class PlayerControl : MonoBehaviour
             currentGnome.GetComponent<GnomeBrain>().ExecuteStack(newStackEmpty, _timeToExecute);
             lastPoint.y += currentGnome.GetComponent<CapsuleCollider>().height+0.1f;
         }
-        Debug.Log(lastPoint);
         _playerHeightDifference= lastPoint.y-transform.position.y;
         StartCoroutine(PlacePlayer(lastPoint, _timeToExecute));
-        Debug.Log(_playerHeightDifference);
     }
     
     public void CancelStack ()
@@ -398,8 +401,8 @@ public class PlayerControl : MonoBehaviour
     }
     #endregion
 
-#region PlayerDeath
-    public void Kill()
+    #region PlayerDeath
+    public void Kill(CauseOfDeath causeofDeath)
     {
         //GameManager.Instance;
         m_rb.isKinematic= false;
@@ -407,7 +410,7 @@ public class PlayerControl : MonoBehaviour
         CancelStack();
         _currentPlayerState = PlayerState.Dead;
         m_rb.AddForce(transform.up * 10 + transform.forward * -1, ForceMode.Impulse);
-        GameManager.Instance.BeginRespawn();
+        GameManager.Instance.BeginRespawn(causeofDeath);
     }
 
     public void Respawn()

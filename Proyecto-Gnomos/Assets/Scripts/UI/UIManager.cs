@@ -1,0 +1,130 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+
+public class UIManager : MonoBehaviour
+{
+    // VARIABLES PARA EL MENU DE PAUSA
+    [SerializeField] private GameObject             m_pauseMenu;
+
+
+    // VARIABLES PARA EL STACKMETRO
+    [Header("Stack variables")]
+    [SerializeField] private GameObject             m_stackMeterGroup;
+    [SerializeField] private GameObject             m_stackHand;
+    private int                                     _maxPossibleGnomes;
+    private float                                   _currentGnomes;
+    private float                                   _stackMeterFill;
+    private Vector3                                 _stackHandRotation;
+
+
+    // VARIABLES PARA EL GAME OVER
+    public enum CauseOfDeath { Drowning, RunOver }
+    [SerializeField] private Image                  m_gameOverImage;
+    [Header("Game Over Images")]
+    [SerializeField] private Sprite                 m_drowningDeathSplash;
+    [SerializeField] private Sprite                 m_carDeathSplash;
+
+    #region PAUSEMENU
+    public void Pause()
+    {
+        m_pauseMenu.SetActive(true);
+        Time.timeScale = 0f;
+    }
+
+    public void Resume()
+    {
+        m_pauseMenu.SetActive(false);
+        Time.timeScale = 1f;
+    }
+    
+    public void Exit()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(Scenes.MAIN_MENU_SCENE);
+    }
+    #endregion
+    #region STACK
+    public void ShowStackGroup(int gnomesInRange)
+    {
+        StartStackCount(gnomesInRange);
+        if (_maxPossibleGnomes > 0) m_stackMeterGroup.SetActive(true);
+    }
+
+    public void HideStackGroup()
+    {
+        m_stackMeterGroup.SetActive(false);
+    }
+
+    public void StartStackCount(int gnomesInRange)
+    {
+        _maxPossibleGnomes= gnomesInRange;
+    }
+
+    public void UpdateStackCount(float currentCount)
+    {
+        _currentGnomes= currentCount;
+        Debug.Log(_currentGnomes);
+        UpdateStackMeterFill();
+        UpdateStackHand();
+    }
+
+    private void UpdateStackMeterFill()
+    {
+        _stackMeterFill = Mathf.Clamp(_currentGnomes / _maxPossibleGnomes, 0, 1);
+    }
+
+    private void UpdateStackHand()
+    {
+        _stackHandRotation.z = _stackMeterFill * -180;
+        m_stackHand.transform.rotation = Quaternion.Euler(_stackHandRotation);
+    }
+
+    
+    #endregion
+    #region GAMEOVER
+    public void GameOverScreenBegin(CauseOfDeath causeOfDeath, float timer)
+    {
+        m_gameOverImage.gameObject.SetActive(true);
+        switch (causeOfDeath)
+        {
+            case CauseOfDeath.Drowning:
+                m_gameOverImage.sprite = m_drowningDeathSplash;
+                break;
+            case CauseOfDeath.RunOver:
+                m_gameOverImage.sprite = m_carDeathSplash;
+                break;
+        }
+        StartCoroutine(TurnOnScreen(timer));
+    }
+
+    public void GameOverScreenEnd()
+    {
+        Color color = m_gameOverImage.color;
+        color.a = 0f;
+        m_gameOverImage.color = color;
+        m_gameOverImage.gameObject.SetActive(false);
+    }
+
+    private IEnumerator TurnOnScreen(float timer)
+    {
+        float time = 0f;
+        float alpha = 0f;
+        Color color = m_gameOverImage.color;
+        color.a = alpha;
+        m_gameOverImage.color = color;
+        while (alpha < 1)
+        {
+            alpha = time * 2 / (timer);
+            color.a = alpha;
+            m_gameOverImage.color = color;
+            time += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        color.a = 1f;
+        m_gameOverImage.color = color;
+    }
+    #endregion
+}

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class UIManager : MonoBehaviour
 {
@@ -19,6 +20,12 @@ public class UIManager : MonoBehaviour
     private float                                   _stackMeterFill;
     private Vector3                                 _stackHandRotation;
 
+    //VARIABLES PARA EL NUMERO DE GNOMOS
+    [SerializeField] private string m_gnomesTotal;
+    [SerializeField] private GameObject m_numStackGnomes;
+    [SerializeField] private GameObject m_numActiveGnomes;
+    [SerializeField] private TMP_Text m_currentGnomesText;
+
 
     // VARIABLES PARA EL GAME OVER
     public enum CauseOfDeath { Drowning, RunOver }
@@ -26,6 +33,11 @@ public class UIManager : MonoBehaviour
     [Header("Game Over Images")]
     [SerializeField] private Sprite                 m_drowningDeathSplash;
     [SerializeField] private Sprite                 m_carDeathSplash;
+
+    private void Update()
+    {
+        NumberOfGnomes();
+    }
 
     #region PAUSEMENU
     public void Pause()
@@ -46,6 +58,15 @@ public class UIManager : MonoBehaviour
         SceneManager.LoadScene(Scenes.MAIN_MENU_SCENE);
     }
     #endregion
+
+    public void NumberOfGnomes()
+    {
+        m_gnomesTotal = (m_numStackGnomes.transform.childCount + m_numActiveGnomes.transform.childCount).ToString();
+
+        m_currentGnomesText.text = m_gnomesTotal;
+    }
+
+
     #region STACK
     public void ShowStackGroup(int gnomesInRange)
     {
@@ -81,9 +102,8 @@ public class UIManager : MonoBehaviour
         _stackHandRotation.z = _stackMeterFill * -180;
         m_stackHand.transform.rotation = Quaternion.Euler(_stackHandRotation);
     }
-
-    
     #endregion
+
     #region GAMEOVER
     public void GameOverScreenBegin(CauseOfDeath causeOfDeath, float timer)
     {

@@ -109,6 +109,7 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
             m_player.GetComponent<PlayerControl>()?.AddGnomeToFollowerList(this.gameObject);
             _currentGnomeState = GnomeState.followingPlayer;
             m_tickManager.AddObjectToAGroup(this.gameObject);
+            SoundManager.Instance.PlayFx(AudioFX.GetGnome, SoundManager.Instance.ambienceAudioSource);
         }
     }
 

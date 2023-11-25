@@ -162,8 +162,8 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
     public void CancelStack()
     {
         SwitchToFalling();
-        Vector3 pushVector = new Vector3(Random.Range(-1f, 1f), 1, -2);
-        pushVector = Vector3.Scale(pushVector, transform.forward)*10;
+        Vector3 pushVector = new Vector3(Random.Range(-1f, 1f), 3, -2);
+        pushVector = Vector3.Scale(pushVector, transform.forward)*20;
         m_rb.AddForce(pushVector, ForceMode.Impulse);
         StartCoroutine(turnOffOnCollider(0.05f));
         ChangeInRangeOfStackCall(false);

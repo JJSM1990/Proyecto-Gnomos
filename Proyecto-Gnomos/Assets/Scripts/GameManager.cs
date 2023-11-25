@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Checkpoints m_lastCheckpoint;
     [SerializeField] private int m_activeGnomesOnLastCheckPoint;
     [SerializeField] private UIManager m_ui;
+    [SerializeField] private int _playerLives;
 
     public void Awake()
     {
@@ -44,7 +45,7 @@ public class GameManager : MonoBehaviour
     public void BeginRespawn(CauseOfDeath causeofDeath)
     {
         m_ui.GameOverScreenBegin(causeofDeath, 3f);
-        StartCoroutine(RespawnCountdown(3f));
+        StartCoroutine(RespawnCountdown(3f, causeofDeath));
     }
 
     private void Respawn()
@@ -61,7 +62,7 @@ public class GameManager : MonoBehaviour
         m_player.GetComponent<PlayerControl>().Respawn();
     }
 
-    private IEnumerator RespawnCountdown(float respawnTimer)
+    private IEnumerator RespawnCountdown(float respawnTimer, CauseOfDeath causeOfDeath)
     {
         float time = 0f;
         while (time < respawnTimer)
@@ -69,8 +70,17 @@ public class GameManager : MonoBehaviour
             time += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
-        Respawn();
+        if (_playerLives>0)
+        {
+            Respawn();
+            _playerLives--;
+        } else
+        {
+            m_ui.NoLivesLeft(causeOfDeath);
+        }
+           
     }
+    
     #endregion
 
     public void StartStackUI(int gnomesInRange)

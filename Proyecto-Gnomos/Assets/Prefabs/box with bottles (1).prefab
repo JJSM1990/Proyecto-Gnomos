@@ -141,6 +141,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5784ce701af399488228dc420c74d44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _requiresMinimumStack: 1
+  _minimumGnomesRequired: 2
 --- !u!64 &8983334005272122776
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -148,7 +150,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3126904770746394113}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 61374b1601b0f1847b6561cebecd5d9a, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

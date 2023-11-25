@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface IPushableByPlayer
 {
-    public void Push(Vector3 pushStrength)
+    public void Push(Vector3 pushStrength, int gnomeOnStack)
     {
 
     }

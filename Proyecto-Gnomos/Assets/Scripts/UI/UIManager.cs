@@ -21,18 +21,25 @@ public class UIManager : MonoBehaviour
     private Vector3                                 _stackHandRotation;
 
     //VARIABLES PARA EL NUMERO DE GNOMOS
-    [SerializeField] private string m_gnomesTotal;
-    [SerializeField] private GameObject m_numStackGnomes;
-    [SerializeField] private GameObject m_numActiveGnomes;
-    [SerializeField] private TMP_Text m_currentGnomesText;
+    [SerializeField] private string                 m_gnomesTotal;
+    [SerializeField] private GameObject             m_numStackGnomes;
+    [SerializeField] private GameObject             m_numActiveGnomes;
+    [SerializeField] private TMP_Text               m_currentGnomesText;
 
 
     // VARIABLES PARA EL GAME OVER
     public enum CauseOfDeath { Drowning, RunOver }
+    [Header("Game Over Variables")]
     [SerializeField] private Image                  m_gameOverImage;
     [Header("Game Over Images")]
     [SerializeField] private Sprite                 m_drowningDeathSplash;
     [SerializeField] private Sprite                 m_carDeathSplash;
+
+    //VARIABLES PARA EL MENU NOLIVES
+    [Header("No Lives Variables")]
+    [SerializeField] private GameObject             m_noLivesGroup;
+    [SerializeField] private GameObject             m_drowningExitButton;
+    [SerializeField] private GameObject             m_carExitButton;
 
     private void Update()
     {
@@ -87,7 +94,6 @@ public class UIManager : MonoBehaviour
     public void UpdateStackCount(float currentCount)
     {
         _currentGnomes= currentCount;
-        Debug.Log(_currentGnomes);
         UpdateStackMeterFill();
         UpdateStackHand();
     }
@@ -145,6 +151,20 @@ public class UIManager : MonoBehaviour
         }
         color.a = 1f;
         m_gameOverImage.color = color;
+    }
+
+    public void NoLivesLeft(CauseOfDeath causeOfDeath)
+    {
+        m_noLivesGroup.SetActive(true);
+        switch (causeOfDeath)
+        {
+            case CauseOfDeath.Drowning:
+                m_drowningExitButton.SetActive(true);
+                break;
+            case CauseOfDeath.RunOver:
+                m_carExitButton.SetActive(true);
+                break;
+        }
     }
     #endregion
 }

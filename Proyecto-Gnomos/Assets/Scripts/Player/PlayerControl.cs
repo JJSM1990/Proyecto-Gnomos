@@ -364,6 +364,7 @@ public class PlayerControl : MonoBehaviour
         {
             var currentGnome = m_stackGnomeList.GetChild(i);
             GameObject newStackEmpty= Instantiate(new GameObject(), m_stackParent.transform);
+            newStackEmpty.name = "StackEmpty";
             newStackEmpty.transform.position = lastPoint;
             currentGnome.GetComponent<GnomeBrain>().ExecuteStack(newStackEmpty, _timeToExecute);
             lastPoint.y += currentGnome.GetComponent<CapsuleCollider>().height+0.1f;
@@ -385,6 +386,10 @@ public class PlayerControl : MonoBehaviour
             }
             m_gnomeModel.transform.position = transform.position;
             m_characterController.Move(new Vector3(0, _playerHeightDifference, 0));
+            for (int i = 0; i < m_stackParent.transform.childCount; i++)
+            {
+                Destroy(m_stackParent.transform.GetChild(m_stackParent.transform.childCount - i-1).gameObject);
+            }
         }
     }
     private IEnumerator PlacePlayer(Vector3 position, float timeToExecute)
@@ -431,11 +436,11 @@ public class PlayerControl : MonoBehaviour
             {
                 case PlayerState.Stacking:
                     pushStrength = _playerWeight * _playerMovement * m_stackGnomeList.childCount;
-                    pushInterface.Push(pushStrength);
+                    pushInterface.Push(pushStrength, m_stackGnomeList.childCount);
                     break;
                 default:
                     pushStrength = _playerWeight * _playerMovement;
-                    pushInterface.Push(pushStrength);
+                    pushInterface.Push(pushStrength,1);
                     break;
             }
 

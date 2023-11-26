@@ -49,6 +49,10 @@ PrefabInstance:
       value: -0.2
       objectReference: {fileID: 0}
     - target: {fileID: 2383497799285660716, guid: cbbc8e92e6809354087d51c0d874f1ed, type: 3}
+      propertyPath: _requiresMinimumStack
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2383497799285660716, guid: cbbc8e92e6809354087d51c0d874f1ed, type: 3}
       propertyPath: _minimumGnomesRequired
       value: 10
       objectReference: {fileID: 0}

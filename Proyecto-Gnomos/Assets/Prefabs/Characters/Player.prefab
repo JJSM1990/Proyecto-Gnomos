@@ -129,7 +129,7 @@ MonoBehaviour:
   _jumpingSpeed: 5
   _fallingSpeed: 10
   _playerWeight: 10
-  _callToStackRange: 3
+  _callToStackRange: 5
   _playerSpeedStacked: 0
   _stackBool: 0
   _stackTargerCounter: 0

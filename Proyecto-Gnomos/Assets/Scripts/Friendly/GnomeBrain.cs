@@ -126,9 +126,12 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
     {
         if (m_player == null) return false;
         NavMeshPath path = new NavMeshPath();
-        m_navAgent.CalculatePath(m_player.transform.position, path);
-        var status = path.status;
-        if (status == NavMeshPathStatus.PathComplete) return true;
+        NavMesh.SamplePosition(m_player.transform.position, out NavMeshHit hitFollow, 1f, NavMesh.AllAreas);
+        if (m_navAgent.isOnNavMesh && m_navAgent.CalculatePath(hitFollow.position, path)) 
+        {
+            var status = path.status;
+            if (status == NavMeshPathStatus.PathComplete) return true;
+        }
         return false;
 
     }
@@ -212,5 +215,4 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
         yield return new WaitForSeconds(time);
         m_collider.enabled= true;
     }
-
 }

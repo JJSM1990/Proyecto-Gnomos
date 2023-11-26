@@ -345,17 +345,24 @@ public class PlayerControl : MonoBehaviour
 
     private void  addGnomesToStackList(int stack)
     {
+        float RemainingToStackTarget = stack;
+        int currentGnome = 0;
+        Debug.Log(RemainingToStackTarget);
         GameObject gnome;
-        for (int j = 0; j < stack+1; j++)
+        while (RemainingToStackTarget>0)
         {
-            for (int i = 0; i < m_activatedGnomesList.childCount; i++)
+            Debug.Log(RemainingToStackTarget);
+            if (m_activatedGnomesList.childCount == 0) break;
+            gnome = m_activatedGnomesList.GetChild(currentGnome)?.gameObject;
+            Debug.Log((gnome != null) + " " + RemainingToStackTarget);
+            if (gnome!=null&&gnome.GetComponent<GnomeBrain>().ReturnIfInRangeOfStackCall())
             {
-                gnome = m_activatedGnomesList.GetChild(i).gameObject;
-                if (gnome.GetComponent<GnomeBrain>().ReturnIfInRangeOfStackCall())
-                {
-                    gnome.transform.SetParent(m_stackGnomeList);
-                    stack--;
-                }
+                Debug.Log("gnome " + RemainingToStackTarget);
+                gnome.transform.SetParent(m_stackGnomeList);
+                RemainingToStackTarget--;
+            } else
+            {
+                currentGnome++;
             }
         }
     }
@@ -373,6 +380,8 @@ public class PlayerControl : MonoBehaviour
             lastPoint.y += currentGnome.GetComponent<CapsuleCollider>().height+0.1f;
         }
         _playerHeightDifference= lastPoint.y-transform.position.y;
+        m_characterController.height= _playerHeightDifference;
+        m_characterController.center = new Vector3(0,_playerHeightDifference / 2,0);
         StartCoroutine(PlacePlayer(lastPoint, _timeToExecute));
     }
     
@@ -388,6 +397,8 @@ public class PlayerControl : MonoBehaviour
                 gnome.SetParent(m_activatedGnomesList);
             }
             m_gnomeModel.transform.position = transform.position;
+            m_characterController.height = 0.9f;
+            m_characterController.center = new Vector3(0, 0.45f, 0);
             m_characterController.Move(new Vector3(0, _playerHeightDifference, 0));
             for (int i = 0; i < m_stackParent.transform.childCount; i++)
             {

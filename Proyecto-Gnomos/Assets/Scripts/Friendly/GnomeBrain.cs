@@ -165,10 +165,9 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
     public void CancelStack()
     {
         SwitchToFalling();
-        Vector3 pushVector = new Vector3(Random.Range(-1f, 1f), 3, -2);
-        pushVector = Vector3.Scale(pushVector, transform.forward)*20;
+        Vector3 pushVector = transform.up-transform.forward*20;
         m_rb.AddForce(pushVector, ForceMode.Impulse);
-        StartCoroutine(turnOffOnCollider(0.05f));
+        StartCoroutine(IgnorePlayerTimer(0.1f));
         ChangeInRangeOfStackCall(false);
     }
 
@@ -209,10 +208,10 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
                 break;
         }
     }
-    private IEnumerator turnOffOnCollider(float time)
+    private IEnumerator IgnorePlayerTimer(float time)
     {
-        m_collider.enabled= false;
+        m_collider.excludeLayers = LayerMask.GetMask("Player");
         yield return new WaitForSeconds(time);
-        m_collider.enabled= true;
+        m_collider.includeLayers = LayerMask.GetMask("Player");
     }
 }

@@ -99,4 +99,13 @@ public class GameManager : MonoBehaviour
         m_ui.UpdateStackCount(currentCount);
     }
 
+    public void StartTextUI(string text)
+    {
+        m_ui.PopUpActivation(true, text);
+    }
+
+    public void EndTextUI()
+    {
+        m_ui.PopUpActivation(false, " ");
+    }
 }

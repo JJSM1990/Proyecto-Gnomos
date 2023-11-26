@@ -8,10 +8,12 @@ using TMPro;
 public class UIManager : MonoBehaviour
 {
     // VARIABLES PARA EL MENU DE PAUSA
+
     [SerializeField] private GameObject             m_pauseMenu;
 
 
     // VARIABLES PARA EL STACKMETRO
+
     [Header("Stack variables")]
     [SerializeField] private GameObject             m_stackMeterGroup;
     [SerializeField] private GameObject             m_stackHand;
@@ -20,7 +22,9 @@ public class UIManager : MonoBehaviour
     private float                                   _stackMeterFill;
     private Vector3                                 _stackHandRotation;
 
+
     //VARIABLES PARA EL NUMERO DE GNOMOS
+
     [SerializeField] private string                 m_gnomesTotal;
     [SerializeField] private GameObject             m_numStackGnomes;
     [SerializeField] private GameObject             m_numActiveGnomes;
@@ -28,6 +32,7 @@ public class UIManager : MonoBehaviour
 
 
     // VARIABLES PARA EL GAME OVER
+
     public enum CauseOfDeath { Drowning, RunOver }
 
     [Header("Game Over Variables")]
@@ -39,12 +44,22 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Sprite                 m_drowningDeathSplash;
     [SerializeField] private Sprite                 m_carDeathSplash;
 
+
     //VARIABLES PARA EL MENU NOLIVES
 
     [Header("No Lives Variables")]
     [SerializeField] private GameObject             m_noLivesGroup;
     [SerializeField] private GameObject             m_drowningExitButton;
     [SerializeField] private GameObject             m_carExitButton;
+
+
+    //VARIABLES PARA LAS CAJAS DE TEXTO 
+    [Header("Text box variables")]
+    [SerializeField] private GameObject             m_textboxGroup;
+    [SerializeField] private Image                  m_textboxBackground;
+    [SerializeField] private TextMeshProUGUI        m_textboxText;
+    private bool                                    m_textboxActivated;
+    private Coroutine                               _textboxCoroutine;
 
     private void Update()
     {
@@ -54,12 +69,15 @@ public class UIManager : MonoBehaviour
     #region PAUSEMENU
     public void Pause()
     {
+
         m_pauseMenu.SetActive(true);
+        PauseWhilePopUp(true);
         Time.timeScale = 0f;
     }
 
     public void Resume()
     {
+        PauseWhilePopUp(false); 
         m_pauseMenu.SetActive(false);
         Time.timeScale = 1f;
     }
@@ -183,4 +201,43 @@ public class UIManager : MonoBehaviour
         }
     }
     #endregion
+
+    public void PopUpActivation(bool activated, string text)
+    {
+        m_textboxActivated = activated;
+        m_textboxGroup.SetActive(activated);
+        if (m_textboxActivated) m_textboxText.text = text;
+        _textboxCoroutine = StartCoroutine(PopUpFadeInOut(true, 0.2f));
+    }
+
+    public void PauseWhilePopUp(bool PauseUnPause)
+    {
+        if (m_textboxActivated)
+        {
+            m_textboxGroup.SetActive(PauseUnPause);
+        }
+    }
+    private IEnumerator PopUpFadeInOut(bool activated, float timer)
+    {
+        float targetAlpha = activated ? 1f : 0f;
+        float initialAlpha = activated ? 0f: 1f;
+        float currentAlpha=initialAlpha;
+        float time = 0f;
+        Color color = Color.white;
+        color.a = initialAlpha;
+        m_textboxBackground.color = color;
+        m_textboxText.color = color;
+        while (time>timer)
+        {
+            currentAlpha=Mathf.Lerp(currentAlpha, targetAlpha, time/timer);
+            color.a = currentAlpha;
+            m_textboxBackground.color = color;
+            m_textboxText.color = color;
+            time += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        color.a = targetAlpha;
+        m_textboxBackground.color = color;
+        m_textboxText.color = color;
+    }
 }

@@ -1022,9 +1022,9 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 21300000, guid: dd66f11a865d8724b91765067162f1cf, type: 3}
-    m_PressedSprite: {fileID: 21300000, guid: fdc55beae4fed184c8df06e6577b36d7, type: 3}
-    m_SelectedSprite: {fileID: 21300000, guid: dd66f11a865d8724b91765067162f1cf, type: 3}
+    m_HighlightedSprite: {fileID: 21300000, guid: 61826fa8c1f9fa2408ab9137d318ec30, type: 3}
+    m_PressedSprite: {fileID: 21300000, guid: dd66f11a865d8724b91765067162f1cf, type: 3}
+    m_SelectedSprite: {fileID: 21300000, guid: fdc55beae4fed184c8df06e6577b36d7, type: 3}
     m_DisabledSprite: {fileID: 0}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
@@ -12651,6 +12651,30 @@ PrefabInstance:
     - target: {fileID: 2386760195343000868, guid: 925cb615b2d8a5c41bbfc0b32448e0f9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6210744207945202567, guid: 925cb615b2d8a5c41bbfc0b32448e0f9, type: 3}
+      propertyPath: m_Volume
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6210744207945202567, guid: 925cb615b2d8a5c41bbfc0b32448e0f9, type: 3}
+      propertyPath: MaxDistance
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6210744207945202567, guid: 925cb615b2d8a5c41bbfc0b32448e0f9, type: 3}
+      propertyPath: rolloffMode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6210744207945202567, guid: 925cb615b2d8a5c41bbfc0b32448e0f9, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6210744207945202567, guid: 925cb615b2d8a5c41bbfc0b32448e0f9, type: 3}
+      propertyPath: spreadCustomCurve.m_Curve.Array.data[0].value
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7757325223347973634, guid: 925cb615b2d8a5c41bbfc0b32448e0f9, type: 3}
+      propertyPath: m_fxClips.Array.size
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -30902,9 +30926,9 @@ MonoBehaviour:
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
-    m_HighlightedSprite: {fileID: 21300000, guid: dd66f11a865d8724b91765067162f1cf, type: 3}
-    m_PressedSprite: {fileID: 21300000, guid: fdc55beae4fed184c8df06e6577b36d7, type: 3}
-    m_SelectedSprite: {fileID: 21300000, guid: dd66f11a865d8724b91765067162f1cf, type: 3}
+    m_HighlightedSprite: {fileID: 21300000, guid: fc6549aa92abea4499caee8bc6f55541, type: 3}
+    m_PressedSprite: {fileID: 21300000, guid: 95b6448fc81be024b90cdefae570afe2, type: 3}
+    m_SelectedSprite: {fileID: 21300000, guid: 166f7657a96c50d42b68cda2d8ace486, type: 3}
     m_DisabledSprite: {fileID: 0}
   m_AnimationTriggers:
     m_NormalTrigger: Normal

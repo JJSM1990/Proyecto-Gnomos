@@ -71,6 +71,7 @@ public class CarMovement : MonoBehaviour
         if (!m_NavMeshAgent.hasPath)
         {
             m_NavMeshAgent.SetDestination(m_patrolPoints[_currentPatrolPoint].position);
+            SoundManager.Instance.PlayAmbience(AudioAmbience.Car, true);
             _currentPatrolPoint++;
 
             if (_currentPatrolPoint > m_patrolPoints.Length - 1)

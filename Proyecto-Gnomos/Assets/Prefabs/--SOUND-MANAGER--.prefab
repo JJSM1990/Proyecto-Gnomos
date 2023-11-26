@@ -185,10 +185,12 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 89088964a85d84446938120bea2d7c45, type: 3}
   - {fileID: 8300000, guid: 7c929a314497cf54e8e7d29ff576b626, type: 3}
   - {fileID: 8300000, guid: d2fcdde23a5fb8742ad6b5df15b04dfd, type: 3}
+  - {fileID: 8300000, guid: 69d525aef419570418fff80c10f471a1, type: 3}
   m_musicClips:
   - {fileID: 8300000, guid: f7bd022da0b3ba54d85de163e0b8fe28, type: 3}
   - {fileID: 8300000, guid: 166156d89880f0143b446d7a6bd1ba58, type: 3}
-  m_fxAmbienceClips: []
+  m_fxAmbienceClips:
+  - {fileID: 8300000, guid: 69d525aef419570418fff80c10f471a1, type: 3}
   musicAudioSource: {fileID: 8410463516278300819}
   ambienceAudioSource: {fileID: 6210744207945202567}
   clipAudioSource: {fileID: 682707921346819384}
@@ -237,7 +239,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.122
   m_Pitch: 1
   Loop: 0
   Mute: 0

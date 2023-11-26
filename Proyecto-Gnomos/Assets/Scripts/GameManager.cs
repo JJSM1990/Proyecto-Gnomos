@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
     #region RESPAWN
     public void BeginRespawn(CauseOfDeath causeofDeath)
     {
-        m_ui.GameOverScreenBegin(causeofDeath, 3f);
+        m_ui.GameOverScreenBegin(causeofDeath, 3f, _playerLives);
         StartCoroutine(RespawnCountdown(3f, causeofDeath));
     }
 
@@ -58,6 +58,7 @@ public class GameManager : MonoBehaviour
             gnome.GetComponent<GnomeBrain>().SwitchToFalling();
             gnome.transform.position = m_lastCheckpoint.ReturnSpawnPointPosition()+Random.insideUnitSphere*1f;
         }
+        SoundManager.Instance.PlayMusic(AudioMusic.IntroMusic, true);
         m_ui.GameOverScreenEnd();
         m_player.GetComponent<PlayerControl>().Respawn();
     }

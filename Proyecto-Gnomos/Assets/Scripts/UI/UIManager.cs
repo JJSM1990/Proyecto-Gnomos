@@ -29,13 +29,18 @@ public class UIManager : MonoBehaviour
 
     // VARIABLES PARA EL GAME OVER
     public enum CauseOfDeath { Drowning, RunOver }
+
     [Header("Game Over Variables")]
     [SerializeField] private Image                  m_gameOverImage;
+    [SerializeField] private GameObject             m_livesLeftGroup;
+    [SerializeField] private TextMeshProUGUI        m_livesLeftText;
+
     [Header("Game Over Images")]
     [SerializeField] private Sprite                 m_drowningDeathSplash;
     [SerializeField] private Sprite                 m_carDeathSplash;
 
     //VARIABLES PARA EL MENU NOLIVES
+
     [Header("No Lives Variables")]
     [SerializeField] private GameObject             m_noLivesGroup;
     [SerializeField] private GameObject             m_drowningExitButton;
@@ -111,7 +116,7 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region GAMEOVER
-    public void GameOverScreenBegin(CauseOfDeath causeOfDeath, float timer)
+    public void GameOverScreenBegin(CauseOfDeath causeOfDeath, float timer, int livesLeft)
     {
         m_gameOverImage.gameObject.SetActive(true);
         SoundManager.Instance.PauseAudioSource(SoundManager.Instance.musicAudioSource);
@@ -126,7 +131,7 @@ public class UIManager : MonoBehaviour
                 SoundManager.Instance.PlayFx(AudioFX.RunOverGnome, SoundManager.Instance.clipAudioSource);
                 break;
         }
-        StartCoroutine(TurnOnScreen(timer));
+        StartCoroutine(TurnOnScreen(timer, livesLeft));
     }
 
     public void GameOverScreenEnd()
@@ -135,9 +140,15 @@ public class UIManager : MonoBehaviour
         color.a = 0f;
         m_gameOverImage.color = color;
         m_gameOverImage.gameObject.SetActive(false);
+        m_livesLeftGroup.SetActive(false);
     }
 
-    private IEnumerator TurnOnScreen(float timer)
+    public void UpdateLives(int livesLeft)
+    {
+        m_livesLeftGroup.SetActive(true);
+        m_livesLeftText.text = livesLeft-1 + " LIVES LEFT";
+    }
+    private IEnumerator TurnOnScreen(float timer, int livesLeft)
     {
         float time = 0f;
         float alpha = 0f;
@@ -152,6 +163,7 @@ public class UIManager : MonoBehaviour
             time += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
+        if (livesLeft > 0) UpdateLives(livesLeft);
         color.a = 1f;
         SoundManager.Instance.PlayFx(AudioFX.GameOver, SoundManager.Instance.clipAudioSource);
         m_gameOverImage.color = color;

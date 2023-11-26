@@ -84,7 +84,6 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
                     _currentGnomeState = GnomeState.followingPlayer;
                 }
                 break;
-
             default:
                 break;
         }
@@ -133,7 +132,6 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
             if (status == NavMeshPathStatus.PathComplete) return true;
         }
         return false;
-
     }
 
     public void RunnedOver()
@@ -143,11 +141,10 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
             transform.localScale = m_scaleChange;
             Deactivate();
         }
-
     }
     public void ChangeInRangeOfStackCall(bool value)
     {
-            m_inRangeOfStack = value;
+        m_inRangeOfStack = value;
     }
 
     public bool ReturnIfInRangeOfStackCall()

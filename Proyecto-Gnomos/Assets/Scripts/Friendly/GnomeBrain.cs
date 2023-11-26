@@ -19,11 +19,11 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
 
     private Vector3 m_scaleChange = new Vector3(1,0.1f,1);
 
-    private enum GnomeState
+    public enum GnomeState
     {
         inactive, followingPlayer, Stopped, InStack, MovingToStack, Falling
     }
-    private GnomeState _currentGnomeState = GnomeState.inactive;
+    public GnomeState _currentGnomeState = GnomeState.inactive;
     private void Start()
     {
 
@@ -144,7 +144,7 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
     }
     public void ChangeInRangeOfStackCall(bool value)
     {
-        m_inRangeOfStack = value;
+            m_inRangeOfStack = value;
     }
 
     public bool ReturnIfInRangeOfStackCall()

@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static GnomeBrain;
 using static UIManager;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -345,7 +346,7 @@ public class PlayerControl : MonoBehaviour
     private void  addGnomesToStackList(int stack)
     {
         GameObject gnome;
-        while (stack > 0)
+        for (int j = 0; j < stack+1; j++)
         {
             for (int i = 0; i < m_activatedGnomesList.childCount; i++)
             {

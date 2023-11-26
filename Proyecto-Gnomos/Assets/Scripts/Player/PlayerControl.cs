@@ -76,6 +76,7 @@ public class PlayerControl : MonoBehaviour
         m_inputActions.GnomeKingLand.Movement.canceled += CaptureMovementInput;    
         m_inputActions.GnomeKingLand.StackGnomes.performed += StartStackCount;
         m_inputActions.GnomeKingLand.StackGnomes.canceled += EndStackCount;
+        m_inputActions.GnomeKingLand.Pause.performed += Pause;
     }
     private void OnDisable()
 
@@ -85,6 +86,7 @@ public class PlayerControl : MonoBehaviour
         m_inputActions.GnomeKingLand.Movement.canceled -= CaptureMovementInput;
         m_inputActions.GnomeKingLand.StackGnomes.performed -= StartStackCount;
         m_inputActions.GnomeKingLand.StackGnomes.canceled -= EndStackCount;
+        m_inputActions.GnomeKingLand.Pause.performed -= Pause;
         m_inputActions.GnomeKingLand.Disable();
     }
     #endregion
@@ -135,6 +137,10 @@ public class PlayerControl : MonoBehaviour
         }
     }
 
+    private void Pause(InputAction.CallbackContext context)
+    {
+        GameManager.Instance.PauseGame();
+    }
     private void CharacterRotation()
     {
         Vector3 lookAt = _playerMovement.magnitude > 0.5f ? _playerMovement: _lastRotation;

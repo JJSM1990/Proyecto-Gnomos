@@ -83,6 +83,10 @@ public class GameManager : MonoBehaviour
     
     #endregion
 
+    public void PauseGame()
+    {
+        m_ui.Pause();
+    }
     public void StartStackUI(int gnomesInRange)
     {
         m_ui.ShowStackGroup(gnomesInRange);

@@ -172,6 +172,7 @@ public class PlayerControl : MonoBehaviour
                 break;
             case PlayerState.Moving:
                 _currentPlayerState = PlayerState.Jumping;
+                SoundManager.Instance.PlayFx(AudioFX.Jump, SoundManager.Instance.clipAudioSource);
                 StartCoroutine(EndJump());
                 break;
             case PlayerState.ExecutingStack:
@@ -238,7 +239,7 @@ public class PlayerControl : MonoBehaviour
                         case PlayerState.Falling:
                             break;
                         case PlayerState.Stacking:
-                            CancelStack();
+                            CancelStack();                            
                             _currentPlayerState = PlayerState.Falling;
                             break;
                         default:
@@ -310,6 +311,7 @@ public class PlayerControl : MonoBehaviour
         if (CheckAvailableGnomesVSStackCount())
         {
             addGnomesToStackList(_stackAmount);
+            SoundManager.Instance.PlayFx(AudioFX.Tower, SoundManager.Instance.clipAudioSource);
             SpawnEmptiesAndPlaceCharacters(m_stackGnomeList.childCount);
         } else
         {
@@ -389,6 +391,7 @@ public class PlayerControl : MonoBehaviour
             for (int i = 0; i < m_stackParent.transform.childCount; i++)
             {
                 Destroy(m_stackParent.transform.GetChild(m_stackParent.transform.childCount - i-1).gameObject);
+                SoundManager.Instance.PlayFx(AudioFX.Jump, SoundManager.Instance.clipAudioSource);
             }
         }
     }
@@ -423,9 +426,11 @@ public class PlayerControl : MonoBehaviour
         Debug.Log("PlayerRevived");
         m_rb.isKinematic = true;
         m_characterController.enabled = true;
+        SoundManager.Instance.PlayAudioSource(SoundManager.Instance.musicAudioSource);
         _currentPlayerState = PlayerState.Falling;
     }
 #endregion
+
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         var pushInterface = hit.collider.GetComponent<IPushableByPlayer>();

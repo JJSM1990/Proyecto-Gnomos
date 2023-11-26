@@ -30,6 +30,7 @@ public class LoadingScene : MonoBehaviour
     private void FinishLoading()
     {
         m_LoadingOperation.allowSceneActivation = true;
+        SoundManager.Instance.PlayMusic(AudioMusic.GameMusic, true);
     }
 
 }

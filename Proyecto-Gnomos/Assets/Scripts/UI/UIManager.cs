@@ -114,13 +114,16 @@ public class UIManager : MonoBehaviour
     public void GameOverScreenBegin(CauseOfDeath causeOfDeath, float timer)
     {
         m_gameOverImage.gameObject.SetActive(true);
+        SoundManager.Instance.PauseAudioSource(SoundManager.Instance.musicAudioSource);
         switch (causeOfDeath)
         {
             case CauseOfDeath.Drowning:
                 m_gameOverImage.sprite = m_drowningDeathSplash;
+                SoundManager.Instance.PlayFx(AudioFX.DrownedPlayer, SoundManager.Instance.clipAudioSource);
                 break;
             case CauseOfDeath.RunOver:
                 m_gameOverImage.sprite = m_carDeathSplash;
+                SoundManager.Instance.PlayFx(AudioFX.RunOverGnome, SoundManager.Instance.clipAudioSource);
                 break;
         }
         StartCoroutine(TurnOnScreen(timer));
@@ -150,6 +153,7 @@ public class UIManager : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
         color.a = 1f;
+        SoundManager.Instance.PlayFx(AudioFX.GameOver, SoundManager.Instance.clipAudioSource);
         m_gameOverImage.color = color;
     }
 

@@ -109,7 +109,7 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
             m_player.GetComponent<PlayerControl>()?.AddGnomeToFollowerList(this.gameObject);
             _currentGnomeState = GnomeState.followingPlayer;
             m_tickManager.AddObjectToAGroup(this.gameObject);
-            SoundManager.Instance.PlayFx(AudioFX.GetGnome, SoundManager.Instance.ambienceAudioSource);
+            SoundManager.Instance.PlayFx(AudioFX.GetGnome, SoundManager.Instance.clipAudioSource);
         }
     }
 
@@ -212,4 +212,5 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
         yield return new WaitForSeconds(time);
         m_collider.enabled= true;
     }
+
 }

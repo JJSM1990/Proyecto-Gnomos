@@ -8,10 +8,12 @@ public enum AudioFX
     MouseOn,
     GetGnome,
     RunOverGnome,
-    RunOverPlayer,
     DrownedPlayer,
     Tower,
-    MouseClick
+    GnomeStep,
+    GameOver,
+    Jump,
+    MoveObject
 
 }
 
@@ -38,6 +40,7 @@ public class SoundManager : MonoBehaviour
 
     [SerializeField] public AudioSource musicAudioSource;
     [SerializeField] public AudioSource ambienceAudioSource;
+    [SerializeField] public AudioSource clipAudioSource;
 
     [SerializeField] private AudioMixer audioMixer;
 

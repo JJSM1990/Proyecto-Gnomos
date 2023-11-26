@@ -26,13 +26,8 @@ public class MainMenuController : MonoBehaviour
 
     public void OnButton()
     {
-        SoundManager.Instance.PlayFx(AudioFX.MouseOn, SoundManager.Instance.musicAudioSource);
+        SoundManager.Instance.PlayFx(AudioFX.MouseOn, SoundManager.Instance.clipAudioSource);
     }
-
-    //public void ClickButton()
-    //{
-    //    SoundManager.Instance.PlayFx(AudioFX.MouseClick, SoundManager.Instance.musicAudioSource);
-    //}
 
 
 

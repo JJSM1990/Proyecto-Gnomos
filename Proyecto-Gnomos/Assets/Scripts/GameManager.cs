@@ -58,7 +58,7 @@ public class GameManager : MonoBehaviour
             gnome.GetComponent<GnomeBrain>().SwitchToFalling();
             gnome.transform.position = m_lastCheckpoint.ReturnSpawnPointPosition()+Random.insideUnitSphere*1f;
         }
-        SoundManager.Instance.PlayMusic(AudioMusic.IntroMusic, true);
+        SoundManager.Instance.PlayMusic(AudioMusic.GameMusic, true);
         m_ui.GameOverScreenEnd();
         m_player.GetComponent<PlayerControl>().Respawn();
     }

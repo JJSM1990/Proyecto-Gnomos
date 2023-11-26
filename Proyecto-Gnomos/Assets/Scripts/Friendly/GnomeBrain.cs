@@ -139,6 +139,7 @@ public class GnomeBrain : MonoBehaviour, IUpdateThroughTick
         if(_currentGnomeState != GnomeState.inactive)
         {
             transform.localScale = m_scaleChange;
+            SoundManager.Instance.PlayFx(AudioFX.RunOverGnome, SoundManager.Instance.clipAudioSource);
             Deactivate();
         }
     }

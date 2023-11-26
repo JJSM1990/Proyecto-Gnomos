@@ -13,7 +13,8 @@ public enum AudioFX
     GnomeStep,
     GameOver,
     Jump,
-    MoveObject
+    MoveObject,
+    Victory
 
 }
 

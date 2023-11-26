@@ -87,6 +87,14 @@ public class UIManager : MonoBehaviour
         Time.timeScale = 1f;
         SceneManager.LoadScene(Scenes.MAIN_MENU_SCENE);
     }
+
+    public void Restar()
+    {
+        SceneManager.LoadScene(Scenes.LOADING_SCENE);
+    }
+
+
+
     #endregion
 
     public void NumberOfGnomes()

@@ -142,7 +142,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _requiresMinimumStack: 1
-  _minimumGnomesRequired: 2
+  _minimumGnomesRequired: 3
 --- !u!64 &8983334005272122776
 MeshCollider:
   m_ObjectHideFlags: 0

@@ -88,10 +88,6 @@ public class UIManager : MonoBehaviour
         SceneManager.LoadScene(Scenes.MAIN_MENU_SCENE);
     }
 
-    public void Restar()
-    {
-        SceneManager.LoadScene(Scenes.LOADING_SCENE);
-    }
 
 
 
@@ -229,7 +225,7 @@ public class UIManager : MonoBehaviour
     {
         if (m_textboxActivated)
         {
-            m_textboxGroup.SetActive(PauseUnPause);
+            m_textboxGroup.SetActive(!PauseUnPause);
         }
     }
     private IEnumerator PopUpFadeInOut(bool activated, float timer)

@@ -25,7 +25,7 @@ public class CarMovement : MonoBehaviour
     [SerializeField] float m_preparingTime;
     [SerializeField] GameObject m_particles;
 
-
+    [SerializeField] AudioSource m_audio;
 
     private enum EnemyState
     {
@@ -71,7 +71,6 @@ public class CarMovement : MonoBehaviour
         if (!m_NavMeshAgent.hasPath)
         {
             m_NavMeshAgent.SetDestination(m_patrolPoints[_currentPatrolPoint].position);
-            SoundManager.Instance.PlayAmbience(AudioAmbience.Car, true);
             _currentPatrolPoint++;
 
             if (_currentPatrolPoint > m_patrolPoints.Length - 1)
@@ -125,12 +124,14 @@ public class CarMovement : MonoBehaviour
             case EnemyState.Patrolling:
                 if(m_playerIsSeen == true)
                 {
+                    m_audio.volume = 1f;
                     m_currentState = EnemyState.Preparing;
                 }
                 break;
             case EnemyState.Chasing:
                 if(m_playerIsSeen == false)
                 {
+                    m_audio.volume = 0.5f;
                     m_particles.SetActive(false);
                     m_currentState=EnemyState.Patrolling;
                 }

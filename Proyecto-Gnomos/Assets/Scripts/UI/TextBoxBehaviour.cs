@@ -5,12 +5,22 @@ using UnityEngine;
 public class TextBoxBehaviour : MonoBehaviour
 {
     [SerializeField] private string text;
+    [SerializeField] private bool _singleActivation;
+    private bool CanBeActivated;
 
+    private void Start()
+    {
+        CanBeActivated = true;
+    }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag=="Player")
+        if (other.tag=="Player"&& CanBeActivated)
         {
             GameManager.Instance.StartTextUI(text);
+            if (_singleActivation)
+            {
+                CanBeActivated = false;
+            } 
         }
     }
 

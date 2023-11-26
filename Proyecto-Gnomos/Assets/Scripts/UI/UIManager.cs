@@ -205,9 +205,16 @@ public class UIManager : MonoBehaviour
     public void PopUpActivation(bool activated, string text)
     {
         m_textboxActivated = activated;
-        m_textboxGroup.SetActive(activated);
-        if (m_textboxActivated) m_textboxText.text = text;
-        _textboxCoroutine = StartCoroutine(PopUpFadeInOut(true, 0.2f));
+        if (activated)
+        {
+            m_textboxGroup.SetActive(activated);
+            m_textboxText.text = text;
+        }
+        if (_textboxCoroutine != null)
+        {
+            StopCoroutine(_textboxCoroutine);
+        }
+        _textboxCoroutine = StartCoroutine(PopUpFadeInOut(activated, 0.2f));
     }
 
     public void PauseWhilePopUp(bool PauseUnPause)
@@ -227,9 +234,9 @@ public class UIManager : MonoBehaviour
         color.a = initialAlpha;
         m_textboxBackground.color = color;
         m_textboxText.color = color;
-        while (time>timer)
+        while (time<timer)
         {
-            currentAlpha=Mathf.Lerp(currentAlpha, targetAlpha, time/timer);
+            currentAlpha=Mathf.Lerp(initialAlpha, targetAlpha, time/timer);
             color.a = currentAlpha;
             m_textboxBackground.color = color;
             m_textboxText.color = color;
@@ -239,5 +246,6 @@ public class UIManager : MonoBehaviour
         color.a = targetAlpha;
         m_textboxBackground.color = color;
         m_textboxText.color = color;
+        if (!activated) m_textboxGroup.SetActive(false);
     }
 }
